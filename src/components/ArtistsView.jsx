@@ -48,7 +48,7 @@ export default function ArtistsView() {
   return (
     <div>
       <div className="mb-8">
-        <h2 className="text-3xl md:text-4xl font-extrabold mb-2 tracking-tight">The Artists</h2>
+        <h2 className="font-serif text-3xl md:text-4xl font-bold mb-2 tracking-tight">The Artists</h2>
         <p className="text-secondary text-sm md:text-base max-w-2xl">
           Twelve names that shaped a decade. Some burned bright for a year, others never left.
         </p>
@@ -76,7 +76,7 @@ export default function ArtistsView() {
                 whileInView={{ width: `${(a.hoursPlayed / maxHours) * 100}%` }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.8, ease: 'easeOut' }}
-                className="h-full rounded-full bg-gradient-to-r from-amber to-orange-500"
+                className="h-full rounded-full bg-gradient-to-r from-warm1 to-warm2"
               />
             </div>
           </motion.div>
@@ -84,7 +84,7 @@ export default function ArtistsView() {
       </div>
 
       <div className="mb-14">
-        <h3 className="text-lg font-bold mb-1">Artist Eras</h3>
+        <h3 className="font-serif text-lg font-bold mb-1">Artist Eras</h3>
         <p className="text-secondary text-sm mb-6">
           The three artists who defined the decade — and exactly when each one took over.
         </p>
@@ -94,26 +94,26 @@ export default function ArtistsView() {
               <AreaChart data={eraData}>
                 <defs>
                   <linearGradient id="beatlesGrad" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#6366f1" stopOpacity={0.5} />
-                    <stop offset="95%" stopColor="#6366f1" stopOpacity={0} />
+                    <stop offset="5%" stopColor="#E8682A" stopOpacity={0.5} />
+                    <stop offset="95%" stopColor="#E8682A" stopOpacity={0} />
                   </linearGradient>
                   <linearGradient id="killersGrad" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#8b5cf6" stopOpacity={0.5} />
-                    <stop offset="95%" stopColor="#8b5cf6" stopOpacity={0} />
+                    <stop offset="5%" stopColor="#7EC8D4" stopOpacity={0.5} />
+                    <stop offset="95%" stopColor="#7EC8D4" stopOpacity={0} />
                   </linearGradient>
                   <linearGradient id="mayerGrad" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#f59e0b" stopOpacity={0.5} />
-                    <stop offset="95%" stopColor="#f59e0b" stopOpacity={0} />
+                    <stop offset="5%" stopColor="#F5C878" stopOpacity={0.5} />
+                    <stop offset="95%" stopColor="#F5C878" stopOpacity={0} />
                   </linearGradient>
                 </defs>
-                <CartesianGrid strokeDasharray="3 3" stroke="#1C2333" vertical={false} />
-                <XAxis dataKey="year" stroke="#8B949E" fontSize={12} tickLine={false} axisLine={false} />
-                <YAxis stroke="#8B949E" fontSize={12} tickLine={false} axisLine={false} width={36} />
-                <Tooltip contentStyle={{ background: '#0D1117', border: '1px solid #1C2333', borderRadius: 8 }} labelStyle={{ color: '#F0F6FC' }} />
-                <Legend wrapperStyle={{ fontSize: 12, color: '#8B949E' }} />
-                <Area type="monotone" dataKey="Beatles" name="The Beatles" stroke="#6366f1" fill="url(#beatlesGrad)" strokeWidth={2} />
-                <Area type="monotone" dataKey="Killers" name="The Killers" stroke="#8b5cf6" fill="url(#killersGrad)" strokeWidth={2} />
-                <Area type="monotone" dataKey="Mayer" name="John Mayer" stroke="#f59e0b" fill="url(#mayerGrad)" strokeWidth={2} />
+                <CartesianGrid strokeDasharray="3 3" stroke="#2A4A5A" vertical={false} />
+                <XAxis dataKey="year" stroke="#6B8FA0" fontSize={12} tickLine={false} axisLine={false} />
+                <YAxis stroke="#6B8FA0" fontSize={12} tickLine={false} axisLine={false} width={36} />
+                <Tooltip contentStyle={{ background: '#1B3A4B', border: '1px solid #2A4A5A', borderRadius: 8 }} labelStyle={{ color: '#F2EDD8' }} />
+                <Legend wrapperStyle={{ fontSize: 12, color: '#7EC8D4' }} />
+                <Area type="monotone" dataKey="Beatles" name="The Beatles" stroke="#E8682A" fill="url(#beatlesGrad)" strokeWidth={2} />
+                <Area type="monotone" dataKey="Killers" name="The Killers" stroke="#7EC8D4" fill="url(#killersGrad)" strokeWidth={2} />
+                <Area type="monotone" dataKey="Mayer" name="John Mayer" stroke="#F5C878" fill="url(#mayerGrad)" strokeWidth={2} />
               </AreaChart>
             </ResponsiveContainer>
           </div>

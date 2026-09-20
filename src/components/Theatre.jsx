@@ -18,8 +18,8 @@ export default function Theatre({ onBegin }) {
 
   return (
     <div className="fixed inset-0 bg-bg flex flex-col items-center justify-center overflow-hidden px-6">
-      <div className="absolute inset-0 opacity-30" style={{
-        background: 'radial-gradient(circle at 50% 40%, rgba(99,102,241,0.15), transparent 60%)'
+      <div className="absolute inset-0 opacity-40" style={{
+        background: 'radial-gradient(circle at 50% 35%, rgba(232,104,42,0.18), transparent 55%), radial-gradient(circle at 50% 80%, rgba(74,155,175,0.16), transparent 60%)'
       }} />
 
       <div className="relative z-10 flex flex-col items-center gap-6 text-center max-w-4xl">
@@ -29,9 +29,9 @@ export default function Theatre({ onBegin }) {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1, delay: line.delay, ease: 'easeOut' }}
-            className={`${line.size} font-bold tracking-tight ${
+            className={`font-serif ${line.size} font-bold tracking-tight ${
               line.accent
-                ? 'bg-gradient-to-r from-amber-400 via-orange-300 to-amber-500 bg-clip-text text-transparent mt-4'
+                ? 'bg-gradient-to-r from-warm1 via-warm2 to-warm3 bg-clip-text text-transparent mt-4'
                 : 'text-primary'
             }`}
           >
@@ -47,7 +47,7 @@ export default function Theatre({ onBegin }) {
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.97 }}
             onClick={onBegin}
-            className="mt-10 px-10 py-4 rounded-card bg-amber text-black font-semibold text-lg tracking-wide shadow-[0_0_40px_rgba(245,158,11,0.35)] hover:shadow-[0_0_60px_rgba(245,158,11,0.5)] transition-all duration-300"
+            className="mt-10 px-10 py-4 rounded-card bg-amber text-bg font-semibold text-lg tracking-wide shadow-[0_0_40px_rgba(232,104,42,0.35)] hover:shadow-[0_0_60px_rgba(232,104,42,0.5)] transition-all duration-300"
           >
             Begin
           </motion.button>

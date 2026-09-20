@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800;900&family=Inter:wght@300;400;500;600;700;800;900&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -11,8 +11,8 @@
 html, body {
   margin: 0;
   padding: 0;
-  background-color: #080C14;
-  color: #F0F6FC;
+  background-color: #0D1B2A;
+  color: #F2EDD8;
   font-family: 'Inter', sans-serif;
   overflow-x: hidden;
 }
@@ -27,16 +27,16 @@ html, body {
 }
 
 ::-webkit-scrollbar-track {
-  background: #080C14;
+  background: #0D1B2A;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #1C2333;
+  background: #4A9BAF;
   border-radius: 8px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #2a3350;
+  background: #7EC8D4;
 }
 
 .no-scrollbar::-webkit-scrollbar {
@@ -46,4 +46,22 @@ html, body {
 .no-scrollbar {
   -ms-overflow-style: none;
   scrollbar-width: none;
+}
+
+.scroll-thin {
+  scrollbar-width: thin;
+  scrollbar-color: #4A9BAF #0D1B2A;
+}
+
+.gradient-border {
+  position: relative;
+  border-radius: 12px;
+  background: linear-gradient(145deg, rgba(232,104,42,0.55), rgba(74,155,175,0.55));
+  padding: 1.5px;
+}
+
+.gradient-border > .gradient-border-inner {
+  border-radius: 10.5px;
+  height: 100%;
+  width: 100%;
 }

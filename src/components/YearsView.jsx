@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, Cell } from 'recharts';
 import { Moon, Music, ListMusic, Clock } from 'lucide-react';
 import { yearlyStats, topTracksAllTime, chapters } from '../data/spotifyStory.js';
+import { accentColor } from '../utils/color.js';
 
 function chapterForYear(year) {
   return chapters.find((c) => year >= c.yearRange[0] && year <= c.yearRange[1]);
@@ -30,6 +31,7 @@ export default function YearsView() {
   const [selectedYear, setSelectedYear] = useState(2020);
   const year = yearlyStats.find((y) => y.year === selectedYear);
   const chapter = chapterForYear(selectedYear);
+  const accent = accentColor(chapter.color);
   const lateNightPct = ((year.lateNightPlays / year.totalPlays) * 100).toFixed(1);
   const nightOwlScore = Math.min(100, Math.round((year.lateNightPlays / year.totalPlays) * 180));
   const tracks = tracksForYear(selectedYear);
@@ -37,7 +39,7 @@ export default function YearsView() {
   return (
     <div>
       <div className="mb-8">
-        <h2 className="text-3xl md:text-4xl font-extrabold mb-2 tracking-tight">Year by Year</h2>
+        <h2 className="font-serif text-3xl md:text-4xl font-bold mb-2 tracking-tight">Year by Year</h2>
         <p className="text-secondary text-sm md:text-base max-w-2xl">
           Twelve years, twelve very different people. Pick a year to see who they were.
         </p>
@@ -47,9 +49,9 @@ export default function YearsView() {
         <div className="h-72">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={yearlyStats} onClick={(e) => e?.activeLabel && setSelectedYear(e.activeLabel)}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#1C2333" vertical={false} />
-              <XAxis dataKey="year" stroke="#8B949E" fontSize={12} tickLine={false} axisLine={false} />
-              <YAxis stroke="#8B949E" fontSize={12} tickLine={false} axisLine={false} width={40} label={{ value: 'Hours', angle: -90, position: 'insideLeft', fill: '#8B949E', fontSize: 11 }} />
+              <CartesianGrid strokeDasharray="3 3" stroke="#2A4A5A" vertical={false} />
+              <XAxis dataKey="year" stroke="#6B8FA0" fontSize={12} tickLine={false} axisLine={false} />
+              <YAxis stroke="#6B8FA0" fontSize={12} tickLine={false} axisLine={false} width={40} label={{ value: 'Hours', angle: -90, position: 'insideLeft', fill: '#6B8FA0', fontSize: 11 }} />
               <Tooltip content={<CustomTooltip />} cursor={{ fill: 'rgba(255,255,255,0.05)' }} />
               <Bar dataKey="totalHours" radius={[6, 6, 0, 0]} cursor="pointer" name="Hours">
                 {yearlyStats.map((y) => {
@@ -58,9 +60,9 @@ export default function YearsView() {
                   return (
                     <Cell
                       key={y.year}
-                      fill={c.color}
+                      fill={accentColor(c.color)}
                       opacity={active ? 1 : 0.45}
-                      stroke={active ? '#fff' : 'none'}
+                      stroke={active ? '#F2EDD8' : 'none'}
                       strokeWidth={active ? 2 : 0}
                     />
                   );
@@ -76,7 +78,7 @@ export default function YearsView() {
               onClick={() => setSelectedYear(y.year)}
               className={`px-3 py-1.5 rounded-full text-xs font-medium border transition-colors duration-300 ${
                 selectedYear === y.year
-                  ? 'bg-amber text-black border-amber'
+                  ? 'bg-amber text-bg border-amber'
                   : 'bg-transparent text-secondary border-border hover:border-secondary'
               }`}
             >
@@ -98,10 +100,10 @@ export default function YearsView() {
           <div className="lg:col-span-2 space-y-6">
             <div className="bg-card border border-border rounded-card p-6">
               <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
-                <h3 className="text-2xl font-bold">{selectedYear}</h3>
+                <h3 className="font-serif text-2xl font-bold">{selectedYear}</h3>
                 <span
                   className="px-3 py-1 rounded-full text-xs font-semibold"
-                  style={{ backgroundColor: `${chapter.color}25`, color: chapter.color, border: `1px solid ${chapter.color}60` }}
+                  style={{ backgroundColor: `${accent}25`, color: accent, border: `1px solid ${accent}60` }}
                 >
                   Chapter: {chapter.name}
                 </span>
@@ -129,7 +131,7 @@ export default function YearsView() {
 
               <div className="border-t border-border pt-4">
                 <div className="text-secondary text-xs uppercase tracking-wide mb-1">Top Artist of {selectedYear}</div>
-                <div className="text-2xl md:text-3xl font-extrabold" style={{ color: chapter.color }}>{year.topArtist}</div>
+                <div className="font-serif text-2xl md:text-3xl font-bold" style={{ color: accent }}>{year.topArtist}</div>
               </div>
             </div>
 
@@ -143,7 +145,7 @@ export default function YearsView() {
                       <div className="font-medium truncate">{t.track}</div>
                       <div className="text-xs text-secondary truncate">{t.artist}</div>
                     </div>
-                    <div className="text-sm font-semibold shrink-0" style={{ color: chapter.color }}>{t.minutes}m</div>
+                    <div className="text-sm font-semibold shrink-0" style={{ color: accent }}>{t.minutes}m</div>
                   </li>
                 ))}
               </ol>
@@ -154,10 +156,10 @@ export default function YearsView() {
             <h4 className="text-sm font-bold uppercase tracking-wide text-secondary mb-6">Night Owl Score</h4>
             <div className="relative w-44 h-44">
               <svg viewBox="0 0 100 100" className="w-full h-full -rotate-90">
-                <circle cx="50" cy="50" r="42" fill="none" stroke="#1C2333" strokeWidth="10" />
+                <circle cx="50" cy="50" r="42" fill="none" stroke="#2A4A5A" strokeWidth="10" />
                 <motion.circle
                   cx="50" cy="50" r="42" fill="none"
-                  stroke={chapter.color}
+                  stroke={accent}
                   strokeWidth="10"
                   strokeLinecap="round"
                   strokeDasharray={2 * Math.PI * 42}

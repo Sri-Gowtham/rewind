@@ -6,6 +6,7 @@ import StoryView from './components/StoryView.jsx';
 import YearsView from './components/YearsView.jsx';
 import ArtistsView from './components/ArtistsView.jsx';
 import PatternsView from './components/PatternsView.jsx';
+import WaveDivider from './components/WaveDivider.jsx';
 
 const NAV = [
   { id: 'story', label: 'Story', icon: BookOpen },
@@ -27,19 +28,19 @@ export default function App() {
       <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
         <motion.div
           className="absolute rounded-full blur-[120px]"
-          style={{ width: 500, height: 500, top: '-10%', left: '-10%', background: '#6366f1', opacity: 0.08 }}
+          style={{ width: 500, height: 500, top: '-10%', left: '-10%', background: '#E8682A', opacity: 0.07 }}
           animate={{ x: [0, 60, 0], y: [0, 40, 0] }}
           transition={{ duration: 22, repeat: Infinity, ease: 'easeInOut' }}
         />
         <motion.div
           className="absolute rounded-full blur-[120px]"
-          style={{ width: 550, height: 550, top: '30%', right: '-15%', background: '#f59e0b', opacity: 0.06 }}
+          style={{ width: 550, height: 550, top: '30%', right: '-15%', background: '#F0A050', opacity: 0.06 }}
           animate={{ x: [0, -50, 0], y: [0, -30, 0] }}
           transition={{ duration: 26, repeat: Infinity, ease: 'easeInOut', delay: 2 }}
         />
         <motion.div
           className="absolute rounded-full blur-[120px]"
-          style={{ width: 480, height: 480, bottom: '-15%', left: '20%', background: '#10b981', opacity: 0.06 }}
+          style={{ width: 480, height: 480, bottom: '-15%', left: '20%', background: '#4A9BAF', opacity: 0.08 }}
           animate={{ x: [0, 40, 0], y: [0, -25, 0] }}
           transition={{ duration: 24, repeat: Infinity, ease: 'easeInOut', delay: 4 }}
         />
@@ -49,7 +50,7 @@ export default function App() {
         <div className="max-w-7xl mx-auto px-4 md:px-8 py-4 flex items-center justify-between gap-4">
           <div className="flex items-center gap-2 shrink-0">
             <Headphones className="w-5 h-5 text-amber" />
-            <span className="font-bold text-lg tracking-tight hidden sm:inline">Echoes</span>
+            <span className="font-serif font-bold text-lg tracking-tight hidden sm:inline">Echoes</span>
           </div>
 
           <nav className="flex items-center gap-1 bg-card border border-border rounded-full p-1 overflow-x-auto no-scrollbar">
@@ -61,7 +62,7 @@ export default function App() {
                   key={item.id}
                   onClick={() => setView(item.id)}
                   className={`relative flex items-center gap-1.5 px-3 md:px-4 py-2 rounded-full text-sm font-medium transition-colors duration-300 whitespace-nowrap ${
-                    active ? 'text-black' : 'text-secondary hover:text-primary'
+                    active ? 'text-bg' : 'text-secondary hover:text-warm3'
                   }`}
                 >
                   {active && (
@@ -81,6 +82,10 @@ export default function App() {
           <div className="hidden md:block text-xs text-secondary shrink-0">2013 — 2024</div>
         </div>
       </header>
+
+      <div className="relative z-10">
+        <WaveDivider id="header" height={36} />
+      </div>
 
       <main className="relative z-10 max-w-7xl mx-auto px-4 md:px-8 py-8 md:py-12">
         <AnimatePresence mode="wait">

@@ -44,7 +44,7 @@ export default function PatternsView() {
   return (
     <div>
       <div className="mb-8">
-        <h2 className="text-3xl md:text-4xl font-extrabold mb-2 tracking-tight">The Patterns</h2>
+        <h2 className="font-serif text-3xl md:text-4xl font-bold mb-2 tracking-tight">The Patterns</h2>
         <p className="text-secondary text-sm md:text-base max-w-2xl">
           Behind the songs are habits — when, how, and how faithfully this person listened.
         </p>
@@ -58,21 +58,21 @@ export default function PatternsView() {
             <AreaChart data={hourData}>
               <defs>
                 <linearGradient id="hourGrad" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#F59E0B" stopOpacity={0.5} />
-                  <stop offset="95%" stopColor="#F59E0B" stopOpacity={0} />
+                  <stop offset="5%" stopColor="#E8682A" stopOpacity={0.5} />
+                  <stop offset="95%" stopColor="#E8682A" stopOpacity={0} />
                 </linearGradient>
               </defs>
-              <CartesianGrid strokeDasharray="3 3" stroke="#1C2333" vertical={false} />
-              <XAxis dataKey="label" stroke="#8B949E" fontSize={11} tickLine={false} axisLine={false} interval={1} />
-              <YAxis stroke="#8B949E" fontSize={11} tickLine={false} axisLine={false} width={40} />
+              <CartesianGrid strokeDasharray="3 3" stroke="#2A4A5A" vertical={false} />
+              <XAxis dataKey="label" stroke="#6B8FA0" fontSize={11} tickLine={false} axisLine={false} interval={1} />
+              <YAxis stroke="#6B8FA0" fontSize={11} tickLine={false} axisLine={false} width={40} />
               <Tooltip content={<CustomHourTooltip />} />
-              <Area type="monotone" dataKey="value" stroke="#F59E0B" fill="url(#hourGrad)" strokeWidth={2.5} />
+              <Area type="monotone" dataKey="value" stroke="#E8682A" fill="url(#hourGrad)" strokeWidth={2.5} />
             </AreaChart>
           </ResponsiveContainer>
         </div>
         <div className="flex flex-wrap gap-6 mt-4 text-sm">
           <div className="flex items-center gap-2">
-            <Moon className="w-4 h-4 text-violet-400" />
+            <Moon className="w-4 h-4 text-cool2" />
             <span className="text-secondary">Late-night peak: <span className="text-primary font-medium">{nightPeakHour.label}</span></span>
           </div>
           <div className="flex items-center gap-2">
@@ -94,7 +94,7 @@ export default function PatternsView() {
                 whileInView={{ scale: 1 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.3, delay: c.id * 0.005 }}
-                className={`aspect-square rounded-full ${c.skipped ? 'bg-red-500' : 'bg-emerald-500'} opacity-90`}
+                className={`aspect-square rounded-full ${c.skipped ? 'bg-warm1' : 'bg-cool1'} opacity-90`}
               />
             ))}
           </div>
@@ -108,19 +108,19 @@ export default function PatternsView() {
             <div>
               <div className="flex justify-between text-xs text-secondary mb-1"><span>Android</span><span>93%</span></div>
               <div className="w-full h-4 bg-bg rounded-full overflow-hidden">
-                <motion.div initial={{ width: 0 }} whileInView={{ width: '93%' }} viewport={{ once: true }} transition={{ duration: 1 }} className="h-full bg-gradient-to-r from-emerald-500 to-emerald-400 rounded-full" />
+                <motion.div initial={{ width: 0 }} whileInView={{ width: '93%' }} viewport={{ once: true }} transition={{ duration: 1 }} className="h-full bg-gradient-to-r from-cool1 to-cool2 rounded-full" />
               </div>
             </div>
             <div>
               <div className="flex justify-between text-xs text-secondary mb-1"><span>Web Browser</span><span>5%</span></div>
               <div className="w-full h-4 bg-bg rounded-full overflow-hidden">
-                <motion.div initial={{ width: 0 }} whileInView={{ width: '5%' }} viewport={{ once: true }} transition={{ duration: 1, delay: 0.1 }} className="h-full bg-gradient-to-r from-indigo-500 to-indigo-400 rounded-full" />
+                <motion.div initial={{ width: 0 }} viewport={{ once: true }} whileInView={{ width: '5%' }} transition={{ duration: 1, delay: 0.1 }} className="h-full bg-gradient-to-r from-warm2 to-warm3 rounded-full" />
               </div>
             </div>
             <div>
               <div className="flex justify-between text-xs text-secondary mb-1"><span>Other / Desktop</span><span>2%</span></div>
               <div className="w-full h-4 bg-bg rounded-full overflow-hidden">
-                <motion.div initial={{ width: 0 }} whileInView={{ width: '2%' }} viewport={{ once: true }} transition={{ duration: 1, delay: 0.2 }} className="h-full bg-gradient-to-r from-slate-500 to-slate-400 rounded-full" />
+                <motion.div initial={{ width: 0 }} whileInView={{ width: '2%' }} viewport={{ once: true }} transition={{ duration: 1, delay: 0.2 }} className="h-full bg-muted rounded-full" />
               </div>
             </div>
           </div>
@@ -133,32 +133,35 @@ export default function PatternsView() {
         <div className="h-72">
           <ResponsiveContainer width="100%" height="100%">
             <LineChart data={yearlyStats}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#1C2333" vertical={false} />
-              <XAxis dataKey="year" stroke="#8B949E" fontSize={12} tickLine={false} axisLine={false} />
-              <YAxis stroke="#8B949E" fontSize={12} tickLine={false} axisLine={false} width={50} />
-              <Tooltip contentStyle={{ background: '#0D1117', border: '1px solid #1C2333', borderRadius: 8 }} labelStyle={{ color: '#F0F6FC' }} formatter={(v) => v.toLocaleString()} />
-              <Line type="monotone" dataKey="lateNightPlays" stroke="#8b5cf6" strokeWidth={2.5} dot={{ r: 3, fill: '#8b5cf6' }} name="Late Night Plays" />
-              <ReferenceDot x={2017} y={peakYear2017.lateNightPlays} r={6} fill="#ef4444" stroke="#fff" strokeWidth={1} />
-              <ReferenceDot x={2021} y={peakYear2021.lateNightPlays} r={6} fill="#8b5cf6" stroke="#fff" strokeWidth={1} />
+              <CartesianGrid strokeDasharray="3 3" stroke="#2A4A5A" vertical={false} />
+              <XAxis dataKey="year" stroke="#6B8FA0" fontSize={12} tickLine={false} axisLine={false} />
+              <YAxis stroke="#6B8FA0" fontSize={12} tickLine={false} axisLine={false} width={50} />
+              <Tooltip contentStyle={{ background: '#1B3A4B', border: '1px solid #2A4A5A', borderRadius: 8 }} labelStyle={{ color: '#F2EDD8' }} formatter={(v) => v.toLocaleString()} />
+              <Line type="monotone" dataKey="lateNightPlays" stroke="#4A9BAF" strokeWidth={2.5} dot={{ r: 3, fill: '#4A9BAF' }} name="Late Night Plays" />
+              <ReferenceDot x={2017} y={peakYear2017.lateNightPlays} r={6} fill="#E8682A" stroke="#F2EDD8" strokeWidth={1} />
+              <ReferenceDot x={2021} y={peakYear2021.lateNightPlays} r={6} fill="#7EC8D4" stroke="#F2EDD8" strokeWidth={1} />
             </LineChart>
           </ResponsiveContainer>
         </div>
         <div className="flex flex-wrap gap-6 mt-2 text-sm">
           <div className="flex items-center gap-2">
-            <span className="w-2.5 h-2.5 rounded-full bg-red-500 inline-block" />
+            <span className="w-2.5 h-2.5 rounded-full bg-warm1 inline-block" />
             <span className="text-secondary">2017: <span className="text-primary font-medium">8,948</span> — someone wasn't sleeping</span>
           </div>
           <div className="flex items-center gap-2">
-            <span className="w-2.5 h-2.5 rounded-full bg-violet-500 inline-block" />
+            <span className="w-2.5 h-2.5 rounded-full bg-cool2 inline-block" />
             <span className="text-secondary">2021: <span className="text-primary font-medium">9,529</span> — the all-time peak</span>
           </div>
         </div>
       </div>
 
-      <div className="relative overflow-hidden rounded-card border border-border p-8 md:p-12 text-center bg-gradient-to-br from-amber-900/30 via-card to-card">
+      <div
+        className="relative overflow-hidden rounded-card border border-border p-8 md:p-12 text-center"
+        style={{ background: 'linear-gradient(160deg, rgba(232,104,42,0.18) 0%, #1B3A4B 55%, #1B3A4B 100%)' }}
+      >
         <Hourglass className="w-8 h-8 text-amber mx-auto mb-4" />
         <p className="text-secondary text-sm uppercase tracking-widest mb-3">Total Listening Time</p>
-        <p className="text-4xl md:text-6xl font-extrabold tracking-tight mb-3">
+        <p className="font-serif text-4xl md:text-6xl font-bold tracking-tight mb-3">
           5,838 <span className="text-amber">hours</span>
         </p>
         <p className="text-secondary text-base md:text-lg max-w-xl mx-auto">
