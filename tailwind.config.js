@@ -5,27 +5,28 @@ export default {
   theme: {
     extend: {
       colors: {
-        bg: '#0D1B2A',
-        card: '#1B3A4B',
-        border: '#2A4A5A',
-        primary: '#F2EDD8',
-        secondary: '#7EC8D4',
-        muted: '#6B8FA0',
-        warm1: '#E8682A',
-        warm2: '#F0A050',
-        warm3: '#F5C878',
-        cool1: '#4A9BAF',
-        cool2: '#7EC8D4',
+        bg: '#1B1410',
+        card: '#2A2019',
+        border: '#4A3B2E',
+        primary: '#F3E9D2',
+        secondary: '#C9A876',
+        muted: '#8A7860',
+        warm1: '#C1502E',
+        warm2: '#D4A017',
+        warm3: '#E8C468',
+        cool1: '#2F6F6E',
+        cool2: '#6FA8A6',
         amber: {
-          DEFAULT: '#E8682A',
+          DEFAULT: '#C1502E',
         },
       },
       fontFamily: {
         sans: ['Inter', 'sans-serif'],
-        serif: ['"Playfair Display"', 'serif'],
+        serif: ['"Fraunces"', 'serif'],
+        mono: ['"Space Mono"', 'monospace'],
       },
       borderRadius: {
-        card: '12px',
+        card: '6px',
       },
       transitionDuration: {
         DEFAULT: '300ms',

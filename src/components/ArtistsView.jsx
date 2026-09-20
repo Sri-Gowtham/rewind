@@ -54,33 +54,42 @@ export default function ArtistsView() {
         </p>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-14">
-        {topArtistsAllTime.map((a, i) => (
-          <motion.div
-            key={a.artist}
-            initial={{ opacity: 0, y: 16 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: '-40px' }}
-            transition={{ duration: 0.4, delay: i * 0.05 }}
-            className="bg-card border border-border rounded-card p-5 hover:border-amber/50 transition-colors duration-300"
-          >
-            <div className="flex items-start justify-between mb-3">
-              <span className="text-secondary font-mono text-xs">#{i + 1}</span>
-              <span className="text-xs text-secondary">{dominantYears[a.artist] || '—'}</span>
-            </div>
-            <h3 className="text-xl font-bold mb-1 leading-tight">{a.artist}</h3>
-            <div className="text-2xl font-extrabold text-amber mb-3">{a.hoursPlayed.toLocaleString()}<span className="text-sm text-secondary font-normal"> hrs</span></div>
-            <div className="w-full h-2 bg-bg rounded-full overflow-hidden">
-              <motion.div
-                initial={{ width: 0 }}
-                whileInView={{ width: `${(a.hoursPlayed / maxHours) * 100}%` }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.8, ease: 'easeOut' }}
-                className="h-full rounded-full bg-gradient-to-r from-warm1 to-warm2"
-              />
-            </div>
-          </motion.div>
-        ))}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 mb-14">
+        {topArtistsAllTime.map((a, i) => {
+          const segments = 16;
+          const lit = Math.max(1, Math.round((a.hoursPlayed / maxHours) * segments));
+          return (
+            <motion.div
+              key={a.artist}
+              initial={{ opacity: 0, y: 16 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: '-40px' }}
+              transition={{ duration: 0.4, delay: i * 0.05 }}
+              className="ticket-hover bg-card border-2 border-border p-5"
+              style={{ '--accent': '#C1502E' }}
+            >
+              <div className="flex items-start justify-between mb-3 font-mono">
+                <span className="text-secondary text-xs">#{String(i + 1).padStart(2, '0')}</span>
+                <span className="text-xs text-muted">{dominantYears[a.artist] || '—'}</span>
+              </div>
+              <h3 className="font-serif text-xl font-bold mb-1 leading-tight">{a.artist}</h3>
+              <div className="font-mono text-2xl font-bold text-warm1 mb-3">{a.hoursPlayed.toLocaleString()}<span className="text-sm text-secondary font-normal"> hrs</span></div>
+              <div className="flex gap-[3px]">
+                {Array.from({ length: segments }).map((_, s) => (
+                  <motion.span
+                    key={s}
+                    initial={{ scaleY: 0 }}
+                    whileInView={{ scaleY: 1 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.2, delay: i * 0.03 + s * 0.015 }}
+                    className="h-2.5 flex-1"
+                    style={{ background: s < lit ? '#C1502E' : '#4A3B2E' }}
+                  />
+                ))}
+              </div>
+            </motion.div>
+          );
+        })}
       </div>
 
       <div className="mb-14">
@@ -88,32 +97,32 @@ export default function ArtistsView() {
         <p className="text-secondary text-sm mb-6">
           The three artists who defined the decade — and exactly when each one took over.
         </p>
-        <div className="bg-card border border-border rounded-card p-4 md:p-6">
+        <div className="bg-card border-2 border-border p-4 md:p-6">
           <div className="h-80">
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart data={eraData}>
                 <defs>
                   <linearGradient id="beatlesGrad" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#E8682A" stopOpacity={0.5} />
-                    <stop offset="95%" stopColor="#E8682A" stopOpacity={0} />
+                    <stop offset="5%" stopColor="#C1502E" stopOpacity={0.5} />
+                    <stop offset="95%" stopColor="#C1502E" stopOpacity={0} />
                   </linearGradient>
                   <linearGradient id="killersGrad" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#7EC8D4" stopOpacity={0.5} />
-                    <stop offset="95%" stopColor="#7EC8D4" stopOpacity={0} />
+                    <stop offset="5%" stopColor="#6FA8A6" stopOpacity={0.5} />
+                    <stop offset="95%" stopColor="#6FA8A6" stopOpacity={0} />
                   </linearGradient>
                   <linearGradient id="mayerGrad" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#F5C878" stopOpacity={0.5} />
-                    <stop offset="95%" stopColor="#F5C878" stopOpacity={0} />
+                    <stop offset="5%" stopColor="#E8C468" stopOpacity={0.5} />
+                    <stop offset="95%" stopColor="#E8C468" stopOpacity={0} />
                   </linearGradient>
                 </defs>
-                <CartesianGrid strokeDasharray="3 3" stroke="#2A4A5A" vertical={false} />
-                <XAxis dataKey="year" stroke="#6B8FA0" fontSize={12} tickLine={false} axisLine={false} />
-                <YAxis stroke="#6B8FA0" fontSize={12} tickLine={false} axisLine={false} width={36} />
-                <Tooltip contentStyle={{ background: '#1B3A4B', border: '1px solid #2A4A5A', borderRadius: 8 }} labelStyle={{ color: '#F2EDD8' }} />
-                <Legend wrapperStyle={{ fontSize: 12, color: '#7EC8D4' }} />
-                <Area type="monotone" dataKey="Beatles" name="The Beatles" stroke="#E8682A" fill="url(#beatlesGrad)" strokeWidth={2} />
-                <Area type="monotone" dataKey="Killers" name="The Killers" stroke="#7EC8D4" fill="url(#killersGrad)" strokeWidth={2} />
-                <Area type="monotone" dataKey="Mayer" name="John Mayer" stroke="#F5C878" fill="url(#mayerGrad)" strokeWidth={2} />
+                <CartesianGrid strokeDasharray="3 3" stroke="#4A3B2E" vertical={false} />
+                <XAxis dataKey="year" stroke="#8A7860" fontSize={12} tickLine={false} axisLine={false} fontFamily="Space Mono" />
+                <YAxis stroke="#8A7860" fontSize={12} tickLine={false} axisLine={false} width={36} fontFamily="Space Mono" />
+                <Tooltip contentStyle={{ background: '#2A2019', border: '2px solid #4A3B2E' }} labelStyle={{ color: '#F3E9D2' }} />
+                <Legend wrapperStyle={{ fontSize: 12, color: '#C9A876', fontFamily: 'Space Mono' }} />
+                <Area type="monotone" dataKey="Beatles" name="The Beatles" stroke="#C1502E" fill="url(#beatlesGrad)" strokeWidth={2} />
+                <Area type="monotone" dataKey="Killers" name="The Killers" stroke="#6FA8A6" fill="url(#killersGrad)" strokeWidth={2} />
+                <Area type="monotone" dataKey="Mayer" name="John Mayer" stroke="#E8C468" fill="url(#mayerGrad)" strokeWidth={2} />
               </AreaChart>
             </ResponsiveContainer>
           </div>
@@ -121,8 +130,8 @@ export default function ArtistsView() {
       </div>
 
       <div>
-        <h3 className="text-lg font-bold mb-4 flex items-center gap-2"><Sparkles className="w-4 h-4 text-amber" /> Did You Know?</h3>
-        <div className="relative bg-card border border-border rounded-card p-8 min-h-[140px] flex items-center">
+        <h3 className="font-serif text-lg font-bold mb-4 flex items-center gap-2"><Sparkles className="w-4 h-4 text-warm1" /> Did You Know?</h3>
+        <div className="relative bg-card border-2 border-border p-8 min-h-[140px] flex items-center">
           <button
             onClick={() => setInsightIdx((i) => (i - 1 + insights.length) % insights.length)}
             className="absolute left-3 p-2 rounded-full hover:bg-white/5 text-secondary transition-colors duration-300"

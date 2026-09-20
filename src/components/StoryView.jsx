@@ -1,12 +1,10 @@
 import { useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronDown, ChevronLeft, ChevronRight, Clock, Moon, Star } from 'lucide-react';
-import {
-  AreaChart, Area, BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, Dot,
-} from 'recharts';
+import { ChevronDown, ChevronLeft, ChevronRight, Clock, Moon, Disc3 } from 'lucide-react';
+import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts';
 import { chapters, yearlyStats } from '../data/spotifyStory.js';
 import { accentColor } from '../utils/color.js';
-import WaveDivider from './WaveDivider.jsx';
+import EqBars from './EqBars.jsx';
 
 const turningPoints = [
   "Spotify stopped being an experiment. Something clicked.",
@@ -19,151 +17,136 @@ function chapterForYear(year) {
   return chapters.find((c) => year >= c.yearRange[0] && year <= c.yearRange[1]);
 }
 
-function ChapterCard({ chapter, isOpen, onToggle }) {
+function ChapterCard({ chapter, isOpen, onToggle, index }) {
   const accent = accentColor(chapter.color);
   const yearsInChapter = yearlyStats.filter(
     (y) => y.year >= chapter.yearRange[0] && y.year <= chapter.yearRange[1]
   );
   const totalHours = yearsInChapter.reduce((s, y) => s + y.totalHours, 0);
   const totalLateNight = yearsInChapter.reduce((s, y) => s + y.lateNightPlays, 0);
+  const maxYearHours = Math.max(...yearsInChapter.map((y) => y.totalHours));
 
   return (
     <motion.div
       layout
-      whileHover={{ y: -8 }}
-      transition={{ duration: 0.3, ease: 'easeOut' }}
-      className="shrink-0 w-[85vw] sm:w-[480px] md:w-[520px] snap-center"
+      initial={{ opacity: 0, y: 24, rotate: index % 2 === 0 ? -1 : 1 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: '-60px' }}
+      transition={{ duration: 0.5 }}
+      className="shrink-0 w-[85vw] sm:w-[440px] md:w-[460px] snap-center"
     >
       <div
-        className="rounded-card p-[1.5px] h-full"
-        style={{ background: `linear-gradient(150deg, ${accent}99 0%, #2A4A5A 45%, #4A9BAF99 100%)` }}
+        className="ticket-hover ticket-notch halftone relative bg-card h-full"
+        style={{ '--accent': accent, border: `2px solid ${accent}`, boxShadow: `4px 4px 0 0 ${accent}` }}
       >
-        <div
-          className="relative rounded-[10.5px] overflow-hidden bg-card h-full transition-shadow duration-300"
-          style={{ boxShadow: `0 20px 50px -24px ${accent}70` }}
-        >
-          <div
-            className="absolute inset-x-0 top-0 h-40 pointer-events-none"
-            style={{ background: `linear-gradient(180deg, ${accent}45 0%, transparent 100%)` }}
-          />
+        <div className="px-6 md:px-7 pt-6 pb-2 flex items-center justify-between dashed-divider border-t-0" style={{ borderBottom: `2px dashed ${accent}55` }}>
+          <span className="font-mono text-xs tracking-[0.2em] uppercase" style={{ color: accent }}>
+            {chapter.years}
+          </span>
+          <Disc3 className="w-5 h-5" style={{ color: accent }} />
+        </div>
 
-          <div className="relative p-6 md:p-8">
-            <div className="flex items-center justify-between mb-4">
-              <span
-                className="inline-block px-3 py-1 rounded-full text-xs font-semibold tracking-wide uppercase"
-                style={{ backgroundColor: `${accent}25`, color: accent, border: `1px solid ${accent}70` }}
-              >
-                {chapter.years}
-              </span>
-              <Star className="w-4 h-4 opacity-70" style={{ color: accent }} />
-            </div>
+        <div className="relative p-6 md:p-7">
+          <h3 className="font-serif text-3xl md:text-[2.15rem] font-bold text-primary mb-3 tracking-tight leading-[1.05]">
+            {chapter.name}
+          </h3>
 
-            <h3 className="font-serif text-3xl md:text-4xl font-bold text-primary mb-3 tracking-tight">
-              {chapter.name}
-            </h3>
+          <p className="text-secondary text-sm md:text-[0.95rem] leading-relaxed mb-5">
+            {chapter.summary}
+          </p>
 
-            <p className="text-secondary/90 text-sm md:text-base leading-relaxed mb-5">
-              {chapter.summary}
-            </p>
-
-            <div className="grid grid-cols-3 gap-3 mb-5">
-              <div className="bg-black/20 rounded-lg p-3 border border-white/5">
-                <div className="flex items-center gap-1 text-muted text-[10px] uppercase tracking-wide mb-1">
-                  <Clock className="w-3 h-3" /> Hours
-                </div>
-                <div className="text-primary font-bold text-lg">{totalHours}</div>
+          <div className="grid grid-cols-3 gap-3 mb-5 font-mono">
+            <div className="border border-border p-2.5">
+              <div className="flex items-center gap-1 text-muted text-[9px] uppercase tracking-wide mb-1">
+                <Clock className="w-3 h-3" /> Hrs
               </div>
-              <div className="bg-black/20 rounded-lg p-3 border border-white/5">
-                <div className="flex items-center gap-1 text-muted text-[10px] uppercase tracking-wide mb-1">
-                  <Moon className="w-3 h-3" /> Late Night
-                </div>
-                <div className="text-primary font-bold text-lg">{totalLateNight.toLocaleString()}</div>
+              <div className="text-primary font-bold text-base">{totalHours}</div>
+            </div>
+            <div className="border border-border p-2.5">
+              <div className="flex items-center gap-1 text-muted text-[9px] uppercase tracking-wide mb-1">
+                <Moon className="w-3 h-3" /> Night
               </div>
-              <div className="bg-black/20 rounded-lg p-3 border border-white/5">
-                <div className="text-muted text-[10px] uppercase tracking-wide mb-1">Top Artist</div>
-                <div className="text-primary font-bold text-sm leading-tight">{chapter.topArtists[0]}</div>
-              </div>
+              <div className="text-primary font-bold text-base">{totalLateNight.toLocaleString()}</div>
             </div>
-
-            <div className="pl-4 py-2 mb-5 text-primary/90 text-sm italic" style={{ borderLeft: `3px solid ${accent}` }}>
-              "{chapter.insight}"
+            <div className="border border-border p-2.5">
+              <div className="text-muted text-[9px] uppercase tracking-wide mb-1">Top Act</div>
+              <div className="text-primary font-bold text-xs leading-tight">{chapter.topArtists[0]}</div>
             </div>
-
-            <div className="flex flex-wrap gap-2 mb-5">
-              {chapter.topArtists.map((a) => (
-                <span
-                  key={a}
-                  className="px-3 py-1 rounded-full text-xs font-medium bg-white/5 text-secondary border border-white/10"
-                >
-                  {a}
-                </span>
-              ))}
-            </div>
-
-            <button
-              onClick={onToggle}
-              className="flex items-center gap-1.5 text-secondary hover:text-warm3 text-sm font-medium transition-colors duration-300"
-            >
-              {isOpen ? 'Show less' : 'See the full chapter'}
-              <motion.span animate={{ rotate: isOpen ? 180 : 0 }} transition={{ duration: 0.3 }}>
-                <ChevronDown className="w-4 h-4" />
-              </motion.span>
-            </button>
           </div>
 
-          <AnimatePresence>
-            {isOpen && (
-              <motion.div
-                initial={{ height: 0, opacity: 0 }}
-                animate={{ height: 'auto', opacity: 1 }}
-                exit={{ height: 0, opacity: 0 }}
-                transition={{ duration: 0.4, ease: 'easeInOut' }}
-                className="overflow-hidden relative"
-              >
-                <div className="px-6 md:px-8 pb-8 pt-2 bg-black/20 border-t border-white/5">
-                  <h4 className="text-muted text-xs uppercase tracking-widest mb-3 font-semibold">
-                    Key tracks
-                  </h4>
-                  <ul className="space-y-1.5 mb-6">
-                    {chapter.keyTracks.map((t) => (
-                      <li key={t} className="text-secondary text-sm">
-                        • {t}
-                      </li>
-                    ))}
-                  </ul>
+          <div className="pl-4 py-1.5 mb-5 text-primary/90 text-sm italic" style={{ borderLeft: `3px solid ${accent}` }}>
+            "{chapter.insight}"
+          </div>
 
-                  <h4 className="text-muted text-xs uppercase tracking-widest mb-3 font-semibold">
-                    Hours by year
-                  </h4>
-                  <div className="h-40 -ml-2">
-                    <ResponsiveContainer width="100%" height="100%">
-                      <BarChart data={yearsInChapter}>
-                        <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.08)" vertical={false} />
-                        <XAxis dataKey="year" stroke="#6B8FA0" fontSize={12} tickLine={false} axisLine={false} />
-                        <YAxis stroke="#6B8FA0" fontSize={12} tickLine={false} axisLine={false} width={36} />
-                        <Tooltip
-                          contentStyle={{ background: '#1B3A4B', border: '1px solid #2A4A5A', borderRadius: 8, color: '#F2EDD8' }}
-                          cursor={{ fill: 'rgba(255,255,255,0.05)' }}
-                        />
-                        <Bar dataKey="totalHours" fill={accent} radius={[6, 6, 0, 0]} name="Hours" />
-                      </BarChart>
-                    </ResponsiveContainer>
-                  </div>
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
+          <div className="flex flex-wrap gap-2 mb-5">
+            {chapter.topArtists.map((a) => (
+              <span
+                key={a}
+                className="px-2.5 py-1 text-[11px] font-mono text-secondary border border-border"
+              >
+                {a}
+              </span>
+            ))}
+          </div>
+
+          <button
+            onClick={onToggle}
+            className="flex items-center gap-1.5 font-mono text-xs uppercase tracking-widest transition-colors duration-300"
+            style={{ color: accent }}
+          >
+            {isOpen ? 'Rewind' : 'Play Chapter'}
+            <motion.span animate={{ rotate: isOpen ? 180 : 0 }} transition={{ duration: 0.3 }}>
+              <ChevronDown className="w-4 h-4" />
+            </motion.span>
+          </button>
         </div>
+
+        <AnimatePresence>
+          {isOpen && (
+            <motion.div
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: 'auto', opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              transition={{ duration: 0.4, ease: 'easeInOut' }}
+              className="overflow-hidden relative"
+            >
+              <div className="px-6 md:px-7 pb-7 pt-3" style={{ borderTop: `2px dashed ${accent}55` }}>
+                <h4 className="text-muted text-[10px] uppercase tracking-widest mb-3 font-mono">
+                  Key tracks
+                </h4>
+                <ul className="space-y-1.5 mb-6">
+                  {chapter.keyTracks.map((t) => (
+                    <li key={t} className="text-secondary text-sm">
+                      · {t}
+                    </li>
+                  ))}
+                </ul>
+
+                <h4 className="text-muted text-[10px] uppercase tracking-widest mb-4 font-mono">
+                  Hours by year
+                </h4>
+                <div className="flex items-end gap-5 justify-center">
+                  {yearsInChapter.map((y, i) => (
+                    <div key={y.year} className="flex flex-col items-center gap-2">
+                      <EqBars ratio={y.totalHours / maxYearHours} color={accent} height={90} width={16} segments={9} delay={i * 0.08} />
+                      <span className="font-mono text-[10px] text-muted">{String(y.year).slice(2)}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </motion.div>
   );
 }
 
-function WaveDot(props) {
+function SquareDot(props) {
   const { cx, cy, payload } = props;
   const chapter = chapterForYear(payload.year);
   const accent = accentColor(chapter.color);
-  return <Dot cx={cx} cy={cy} r={4.5} fill={accent} stroke="#0D1B2A" strokeWidth={2} />;
+  return <rect x={cx - 4} y={cy - 4} width={8} height={8} fill={accent} stroke="#1B1410" strokeWidth={1.5} />;
 }
 
 function CustomYearTooltip({ active, payload }) {
@@ -172,12 +155,12 @@ function CustomYearTooltip({ active, payload }) {
   const chapter = chapterForYear(y.year);
   const accent = accentColor(chapter.color);
   return (
-    <div className="bg-card border border-border rounded-lg p-3 w-44 shadow-2xl text-left">
+    <div className="bg-card border-2 border-border p-3 w-44 text-left font-mono">
       <div className="font-bold text-sm mb-1 text-primary">{y.year}</div>
-      <div className="text-xs text-secondary">Hours: <span className="text-primary font-medium">{y.totalHours}</span></div>
-      <div className="text-xs text-secondary">Top artist: <span className="text-primary font-medium">{y.topArtist}</span></div>
-      <div className="text-xs text-secondary">Late night: <span className="text-primary font-medium">{y.lateNightPlays.toLocaleString()}</span></div>
-      <div className="text-xs" style={{ color: accent }}>Chapter: {chapter.name}</div>
+      <div className="text-[11px] text-secondary">Hours: <span className="text-primary">{y.totalHours}</span></div>
+      <div className="text-[11px] text-secondary">Top: <span className="text-primary">{y.topArtist}</span></div>
+      <div className="text-[11px] text-secondary">Night: <span className="text-primary">{y.lateNightPlays.toLocaleString()}</span></div>
+      <div className="text-[11px] mt-1" style={{ color: accent }}>{chapter.name}</div>
     </div>
   );
 }
@@ -236,7 +219,8 @@ export default function StoryView() {
           onClick={() => scrollBy(-1)}
           aria-label="Previous chapter"
           disabled={activeIdx === 0}
-          className="hidden md:flex absolute -left-5 top-1/2 -translate-y-1/2 z-20 items-center justify-center w-11 h-11 rounded-full bg-card border border-border text-secondary hover:text-warm3 hover:border-cool2 disabled:opacity-30 disabled:cursor-not-allowed shadow-xl transition-all duration-300"
+          className="hidden md:flex absolute -left-5 top-1/2 -translate-y-1/2 z-20 items-center justify-center w-11 h-11 bg-card border-2 border-border text-secondary hover:text-warm2 hover:border-warm1 disabled:opacity-30 disabled:cursor-not-allowed transition-all duration-300"
+          style={{ boxShadow: '3px 3px 0 0 #4A3B2E' }}
         >
           <ChevronLeft className="w-5 h-5" />
         </button>
@@ -244,19 +228,21 @@ export default function StoryView() {
           onClick={() => scrollBy(1)}
           aria-label="Next chapter"
           disabled={activeIdx === chapters.length - 1}
-          className="hidden md:flex absolute -right-5 top-1/2 -translate-y-1/2 z-20 items-center justify-center w-11 h-11 rounded-full bg-card border border-border text-secondary hover:text-warm3 hover:border-cool2 disabled:opacity-30 disabled:cursor-not-allowed shadow-xl transition-all duration-300"
+          className="hidden md:flex absolute -right-5 top-1/2 -translate-y-1/2 z-20 items-center justify-center w-11 h-11 bg-card border-2 border-border text-secondary hover:text-warm2 hover:border-warm1 disabled:opacity-30 disabled:cursor-not-allowed transition-all duration-300"
+          style={{ boxShadow: '3px 3px 0 0 #4A3B2E' }}
         >
           <ChevronRight className="w-5 h-5" />
         </button>
 
         <div
           ref={scrollerRef}
-          className="flex md:flex-row flex-col gap-6 md:gap-8 md:overflow-x-auto pb-4 md:snap-x md:snap-mandatory scroll-thin items-stretch"
+          className="flex md:flex-row flex-col gap-8 md:gap-10 md:overflow-x-auto pb-4 md:snap-x md:snap-mandatory scroll-thin items-stretch"
         >
-          {chapters.map((chapter) => (
+          {chapters.map((chapter, i) => (
             <ChapterCard
               key={chapter.id}
               chapter={chapter}
+              index={i}
               isOpen={openId === chapter.id}
               onToggle={() => setOpenId(openId === chapter.id ? null : chapter.id)}
             />
@@ -264,7 +250,7 @@ export default function StoryView() {
         </div>
       </div>
 
-      <div className="flex items-center justify-center gap-2 mt-5">
+      <div className="flex items-center justify-center gap-2 mt-6">
         {chapters.map((c, i) => {
           const accent = accentColor(c.color);
           return (
@@ -272,22 +258,22 @@ export default function StoryView() {
               key={c.id}
               onClick={() => scrollToIndex(i)}
               aria-label={`Go to ${c.name}`}
-              className="h-2 rounded-full transition-all duration-300"
+              className="h-1.5 transition-all duration-300"
               style={{
                 width: activeIdx === i ? 28 : 8,
-                backgroundColor: activeIdx === i ? accent : '#2A4A5A',
+                backgroundColor: activeIdx === i ? accent : '#4A3B2E',
               }}
             />
           );
         })}
       </div>
 
-      <p className="hidden md:block text-center text-muted text-xs mt-3 tracking-wide">
-        Use the arrows or drag to move between chapters — {activeIdx + 1} of {chapters.length}
+      <p className="hidden md:block text-center text-muted text-xs mt-3 tracking-wide font-mono">
+        ◀ ▶ or drag to move between chapters — {activeIdx + 1} / {chapters.length}
       </p>
 
-      <div className="my-10 md:my-12 max-w-2xl mx-auto">
-        <h3 className="font-serif text-lg font-bold text-center mb-5">What Changed, Between Chapters</h3>
+      <div className="my-12 md:my-16 max-w-2xl mx-auto">
+        <h3 className="font-serif text-lg font-bold text-center mb-6">What Changed, Between Chapters</h3>
         <div className="space-y-4">
           {turningPoints.map((t, i) => {
             const from = chapters[i];
@@ -296,13 +282,13 @@ export default function StoryView() {
             return (
               <div key={i} className="flex items-start gap-3">
                 <div className="flex flex-col items-center pt-1 shrink-0">
-                  <span className="w-2 h-2 rounded-full" style={{ backgroundColor: accentColor(from.color) }} />
+                  <span className="w-2 h-2" style={{ backgroundColor: accentColor(from.color) }} />
                   <span className="w-px flex-1 my-1 bg-border" style={{ minHeight: 18 }} />
-                  <span className="w-2 h-2 rounded-full" style={{ backgroundColor: accent }} />
+                  <span className="w-2 h-2" style={{ backgroundColor: accent }} />
                 </div>
                 <div className="pb-2">
                   <p className="text-secondary text-sm">{t}</p>
-                  <p className="text-muted text-xs mt-1">{from.name} → {to.name}</p>
+                  <p className="text-muted text-xs mt-1 font-mono">{from.name} → {to.name}</p>
                 </div>
               </div>
             );
@@ -310,48 +296,42 @@ export default function StoryView() {
         </div>
       </div>
 
-      <WaveDivider id="story-mid" height={56} />
+      <div className="dashed-divider mb-12" />
 
-      <div className="mt-10">
-        <h3 className="font-serif text-xl md:text-2xl font-bold mb-1">Riding the Waves</h3>
-        <p className="text-secondary text-sm mb-6">Every year, its own swell — sized by hours listened, colored by chapter.</p>
+      <div>
+        <h3 className="font-serif text-xl md:text-2xl font-bold mb-1">The Whole Tape</h3>
+        <p className="text-secondary text-sm mb-6">Every year, played back to back — sized by hours, colored by chapter.</p>
 
-        <div className="bg-card border border-border rounded-card p-4 md:p-6">
+        <div className="bg-card border-2 border-border p-4 md:p-6">
           <div className="h-72">
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart data={yearlyStats} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
                 <defs>
-                  <linearGradient id="waveFill" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="#E8682A" stopOpacity={0.55} />
-                    <stop offset="55%" stopColor="#F0A050" stopOpacity={0.3} />
-                    <stop offset="100%" stopColor="#4A9BAF" stopOpacity={0.12} />
-                  </linearGradient>
-                  <linearGradient id="waveStroke" x1="0" y1="0" x2="1" y2="0">
-                    <stop offset="0%" stopColor="#E8682A" />
-                    <stop offset="50%" stopColor="#F0A050" />
-                    <stop offset="100%" stopColor="#4A9BAF" />
-                  </linearGradient>
+                  <pattern id="tapeHatch" width="7" height="7" patternTransform="rotate(45)" patternUnits="userSpaceOnUse">
+                    <rect width="7" height="7" fill="#C1502E" fillOpacity="0.06" />
+                    <line x1="0" y1="0" x2="0" y2="7" stroke="#C1502E" strokeWidth="2.5" strokeOpacity="0.3" />
+                  </pattern>
                 </defs>
-                <CartesianGrid strokeDasharray="3 3" stroke="#2A4A5A" vertical={false} />
-                <XAxis dataKey="year" stroke="#6B8FA0" fontSize={12} tickLine={false} axisLine={false} />
-                <YAxis stroke="#6B8FA0" fontSize={12} tickLine={false} axisLine={false} width={40} />
-                <Tooltip content={<CustomYearTooltip />} cursor={{ stroke: '#4A9BAF', strokeWidth: 1, strokeDasharray: '4 4' }} />
+                <CartesianGrid strokeDasharray="3 3" stroke="#4A3B2E" vertical={false} />
+                <XAxis dataKey="year" stroke="#8A7860" fontSize={12} tickLine={false} axisLine={false} fontFamily="Space Mono" />
+                <YAxis stroke="#8A7860" fontSize={12} tickLine={false} axisLine={false} width={40} fontFamily="Space Mono" />
+                <Tooltip content={<CustomYearTooltip />} cursor={{ stroke: '#C1502E', strokeWidth: 1, strokeDasharray: '4 4' }} />
                 <Area
-                  type="monotone"
+                  type="linear"
                   dataKey="totalHours"
-                  stroke="url(#waveStroke)"
-                  strokeWidth={3}
-                  fill="url(#waveFill)"
-                  dot={<WaveDot />}
-                  activeDot={{ r: 6, stroke: '#0D1B2A', strokeWidth: 2 }}
+                  stroke="#C1502E"
+                  strokeWidth={2.5}
+                  fill="url(#tapeHatch)"
+                  dot={<SquareDot />}
+                  activeDot={{ r: 5, fill: '#E8C468', stroke: '#1B1410', strokeWidth: 2 }}
                 />
               </AreaChart>
             </ResponsiveContainer>
           </div>
-          <div className="flex flex-wrap gap-4 mt-4 justify-center border-t border-border pt-4">
+          <div className="flex flex-wrap gap-4 mt-4 justify-center border-t border-border pt-4 font-mono">
             {chapters.map((c) => (
               <div key={c.id} className="flex items-center gap-2 text-xs text-secondary">
-                <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: accentColor(c.color) }} />
+                <span className="w-2.5 h-2.5" style={{ backgroundColor: accentColor(c.color) }} />
                 {c.name}
               </div>
             ))}

@@ -21,7 +21,7 @@ function CustomHourTooltip({ active, payload }) {
   if (!active || !payload || !payload.length) return null;
   const d = payload[0].payload;
   return (
-    <div className="bg-card border border-border rounded-lg p-3 shadow-xl">
+    <div className="bg-card border-2 border-border p-3">
       <div className="font-bold text-sm">{d.label}</div>
       <div className="text-xs text-secondary">{d.value.toLocaleString()}M ms played</div>
     </div>
@@ -50,23 +50,23 @@ export default function PatternsView() {
         </p>
       </div>
 
-      <div className="bg-card border border-border rounded-card p-4 md:p-6 mb-8">
-        <h3 className="text-lg font-bold mb-1">When does the music play?</h3>
+      <div className="bg-card border-2 border-border p-4 md:p-6 mb-8">
+        <h3 className="font-serif text-lg font-bold mb-1">When does the music play?</h3>
         <p className="text-secondary text-sm mb-6">Total listening time by hour of day, across all 11 years.</p>
         <div className="h-72">
           <ResponsiveContainer width="100%" height="100%">
             <AreaChart data={hourData}>
               <defs>
                 <linearGradient id="hourGrad" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#E8682A" stopOpacity={0.5} />
-                  <stop offset="95%" stopColor="#E8682A" stopOpacity={0} />
+                  <stop offset="5%" stopColor="#C1502E" stopOpacity={0.5} />
+                  <stop offset="95%" stopColor="#C1502E" stopOpacity={0} />
                 </linearGradient>
               </defs>
-              <CartesianGrid strokeDasharray="3 3" stroke="#2A4A5A" vertical={false} />
-              <XAxis dataKey="label" stroke="#6B8FA0" fontSize={11} tickLine={false} axisLine={false} interval={1} />
-              <YAxis stroke="#6B8FA0" fontSize={11} tickLine={false} axisLine={false} width={40} />
+              <CartesianGrid strokeDasharray="3 3" stroke="#4A3B2E" vertical={false} />
+              <XAxis dataKey="label" stroke="#8A7860" fontSize={11} tickLine={false} axisLine={false} interval={1} />
+              <YAxis stroke="#8A7860" fontSize={11} tickLine={false} axisLine={false} width={40} />
               <Tooltip content={<CustomHourTooltip />} />
-              <Area type="monotone" dataKey="value" stroke="#E8682A" fill="url(#hourGrad)" strokeWidth={2.5} />
+              <Area type="monotone" dataKey="value" stroke="#C1502E" fill="url(#hourGrad)" strokeWidth={2.5} />
             </AreaChart>
           </ResponsiveContainer>
         </div>
@@ -83,8 +83,8 @@ export default function PatternsView() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-        <div className="bg-card border border-border rounded-card p-6">
-          <h3 className="text-lg font-bold mb-1 flex items-center gap-2"><SkipForward className="w-4 h-4 text-amber" /> The Skip Story</h3>
+        <div className="bg-card border-2 border-border p-6">
+          <h3 className="font-serif text-lg font-bold mb-1 flex items-center gap-2"><SkipForward className="w-4 h-4 text-amber" /> The Skip Story</h3>
           <p className="text-secondary text-sm mb-5">Only <span className="text-primary font-semibold">5.2%</span> of songs were ever skipped.</p>
           <div className="grid grid-cols-10 gap-1.5 mb-5">
             {circles.map((c) => (
@@ -101,8 +101,8 @@ export default function PatternsView() {
           <p className="text-sm text-secondary italic">This is someone who commits.</p>
         </div>
 
-        <div className="bg-card border border-border rounded-card p-6">
-          <h3 className="text-lg font-bold mb-1 flex items-center gap-2"><Smartphone className="w-4 h-4 text-amber" /> Platform Evolution</h3>
+        <div className="bg-card border-2 border-border p-6">
+          <h3 className="font-serif text-lg font-bold mb-1 flex items-center gap-2"><Smartphone className="w-4 h-4 text-amber" /> Platform Evolution</h3>
           <p className="text-secondary text-sm mb-5">Started on web browser in 2013. Moved to Android — and never really left.</p>
           <div className="space-y-4">
             <div>
@@ -127,19 +127,19 @@ export default function PatternsView() {
         </div>
       </div>
 
-      <div className="bg-card border border-border rounded-card p-4 md:p-6 mb-8">
-        <h3 className="text-lg font-bold mb-1 flex items-center gap-2"><Repeat className="w-4 h-4 text-amber" /> The Late Night Index</h3>
+      <div className="bg-card border-2 border-border p-4 md:p-6 mb-8">
+        <h3 className="font-serif text-lg font-bold mb-1 flex items-center gap-2"><Repeat className="w-4 h-4 text-amber" /> The Late Night Index</h3>
         <p className="text-secondary text-sm mb-6">Late-night plays (10PM – 4AM) per year. Two moments stand out.</p>
         <div className="h-72">
           <ResponsiveContainer width="100%" height="100%">
             <LineChart data={yearlyStats}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#2A4A5A" vertical={false} />
-              <XAxis dataKey="year" stroke="#6B8FA0" fontSize={12} tickLine={false} axisLine={false} />
-              <YAxis stroke="#6B8FA0" fontSize={12} tickLine={false} axisLine={false} width={50} />
-              <Tooltip contentStyle={{ background: '#1B3A4B', border: '1px solid #2A4A5A', borderRadius: 8 }} labelStyle={{ color: '#F2EDD8' }} formatter={(v) => v.toLocaleString()} />
-              <Line type="monotone" dataKey="lateNightPlays" stroke="#4A9BAF" strokeWidth={2.5} dot={{ r: 3, fill: '#4A9BAF' }} name="Late Night Plays" />
-              <ReferenceDot x={2017} y={peakYear2017.lateNightPlays} r={6} fill="#E8682A" stroke="#F2EDD8" strokeWidth={1} />
-              <ReferenceDot x={2021} y={peakYear2021.lateNightPlays} r={6} fill="#7EC8D4" stroke="#F2EDD8" strokeWidth={1} />
+              <CartesianGrid strokeDasharray="3 3" stroke="#4A3B2E" vertical={false} />
+              <XAxis dataKey="year" stroke="#8A7860" fontSize={12} tickLine={false} axisLine={false} />
+              <YAxis stroke="#8A7860" fontSize={12} tickLine={false} axisLine={false} width={50} />
+              <Tooltip contentStyle={{ background: '#2A2019', border: '2px solid #4A3B2E' }} labelStyle={{ color: '#F3E9D2' }} formatter={(v) => v.toLocaleString()} />
+              <Line type="monotone" dataKey="lateNightPlays" stroke="#2F6F6E" strokeWidth={2.5} dot={{ r: 3, fill: '#2F6F6E' }} name="Late Night Plays" />
+              <ReferenceDot x={2017} y={peakYear2017.lateNightPlays} r={6} fill="#C1502E" stroke="#F3E9D2" strokeWidth={1} />
+              <ReferenceDot x={2021} y={peakYear2021.lateNightPlays} r={6} fill="#6FA8A6" stroke="#F3E9D2" strokeWidth={1} />
             </LineChart>
           </ResponsiveContainer>
         </div>
@@ -156,8 +156,8 @@ export default function PatternsView() {
       </div>
 
       <div
-        className="relative overflow-hidden rounded-card border border-border p-8 md:p-12 text-center"
-        style={{ background: 'linear-gradient(160deg, rgba(232,104,42,0.18) 0%, #1B3A4B 55%, #1B3A4B 100%)' }}
+        className="relative overflow-hidden border-2 border-border p-8 md:p-12 text-center halftone"
+        style={{ background: 'linear-gradient(160deg, rgba(193,80,46,0.18) 0%, #2A2019 55%, #2A2019 100%)' }}
       >
         <Hourglass className="w-8 h-8 text-amber mx-auto mb-4" />
         <p className="text-secondary text-sm uppercase tracking-widest mb-3">Total Listening Time</p>

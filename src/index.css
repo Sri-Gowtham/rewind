@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800;900&family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700;9..144,900&family=Space+Mono:wght@400;700&family=Inter:wght@300;400;500;600;700;800&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -11,8 +11,8 @@
 html, body {
   margin: 0;
   padding: 0;
-  background-color: #0D1B2A;
-  color: #F2EDD8;
+  background-color: #1B1410;
+  color: #F3E9D2;
   font-family: 'Inter', sans-serif;
   overflow-x: hidden;
 }
@@ -27,16 +27,16 @@ html, body {
 }
 
 ::-webkit-scrollbar-track {
-  background: #0D1B2A;
+  background: #1B1410;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #4A9BAF;
-  border-radius: 8px;
+  background: #4A3B2E;
+  border-radius: 2px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #7EC8D4;
+  background: #C1502E;
 }
 
 .no-scrollbar::-webkit-scrollbar {
@@ -50,18 +50,58 @@ html, body {
 
 .scroll-thin {
   scrollbar-width: thin;
-  scrollbar-color: #4A9BAF #0D1B2A;
+  scrollbar-color: #4A3B2E #1B1410;
 }
 
-.gradient-border {
+/* Film-grain texture, the single biggest lever against a flat "AI gradient" look */
+.grain {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  opacity: 0.06;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* Faint halftone dot texture for card surfaces, a print-era cue */
+.halftone {
+  background-image: radial-gradient(circle, rgba(243,233,210,0.05) 1px, transparent 1px);
+  background-size: 10px 10px;
+}
+
+/* Ticket-stub hover: hard offset shadow + slight rotation, no glow, no blur */
+.ticket-hover {
+  transition: transform 280ms ease, box-shadow 280ms ease;
+}
+.ticket-hover:hover {
+  transform: translateY(-6px) rotate(-0.6deg);
+  box-shadow: 9px 9px 0 0 var(--accent, #C1502E);
+}
+
+/* Circular notches cut into the card edge, like a torn ticket */
+.ticket-notch {
   position: relative;
-  border-radius: 12px;
-  background: linear-gradient(145deg, rgba(232,104,42,0.55), rgba(74,155,175,0.55));
-  padding: 1.5px;
+}
+.ticket-notch::before,
+.ticket-notch::after {
+  content: '';
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  background: #1B1410;
+  border-radius: 50%;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 5;
+}
+.ticket-notch::before { left: -9px; }
+.ticket-notch::after { right: -9px; }
+
+.dashed-divider {
+  border-top: 2px dashed #4A3B2E;
 }
 
-.gradient-border > .gradient-border-inner {
-  border-radius: 10.5px;
-  height: 100%;
-  width: 100%;
+.stamp-rotate {
+  transform: rotate(-2deg);
 }

@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, Cell } from 'recharts';
 import { Moon, Music, ListMusic, Clock } from 'lucide-react';
 import { yearlyStats, topTracksAllTime, chapters } from '../data/spotifyStory.js';
 import { accentColor } from '../utils/color.js';
+import EqBars from './EqBars.jsx';
 
 function chapterForYear(year) {
   return chapters.find((c) => year >= c.yearRange[0] && year <= c.yearRange[1]);
@@ -16,16 +16,7 @@ function tracksForYear(year) {
   return rotated.slice(0, 8);
 }
 
-function CustomTooltip({ active, payload }) {
-  if (!active || !payload || !payload.length) return null;
-  const d = payload[0].payload;
-  return (
-    <div className="bg-card border border-border rounded-lg p-3 shadow-xl">
-      <div className="font-bold text-sm mb-1">{d.year}</div>
-      <div className="text-xs text-secondary">{d.totalHours} hours listened</div>
-    </div>
-  );
-}
+const maxHours = Math.max(...yearlyStats.map((y) => y.totalHours));
 
 export default function YearsView() {
   const [selectedYear, setSelectedYear] = useState(2020);
@@ -45,46 +36,27 @@ export default function YearsView() {
         </p>
       </div>
 
-      <div className="bg-card border border-border rounded-card p-4 md:p-6 mb-8">
-        <div className="h-72">
-          <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={yearlyStats} onClick={(e) => e?.activeLabel && setSelectedYear(e.activeLabel)}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#2A4A5A" vertical={false} />
-              <XAxis dataKey="year" stroke="#6B8FA0" fontSize={12} tickLine={false} axisLine={false} />
-              <YAxis stroke="#6B8FA0" fontSize={12} tickLine={false} axisLine={false} width={40} label={{ value: 'Hours', angle: -90, position: 'insideLeft', fill: '#6B8FA0', fontSize: 11 }} />
-              <Tooltip content={<CustomTooltip />} cursor={{ fill: 'rgba(255,255,255,0.05)' }} />
-              <Bar dataKey="totalHours" radius={[6, 6, 0, 0]} cursor="pointer" name="Hours">
-                {yearlyStats.map((y) => {
-                  const c = chapterForYear(y.year);
-                  const active = y.year === selectedYear;
-                  return (
-                    <Cell
-                      key={y.year}
-                      fill={accentColor(c.color)}
-                      opacity={active ? 1 : 0.45}
-                      stroke={active ? '#F2EDD8' : 'none'}
-                      strokeWidth={active ? 2 : 0}
-                    />
-                  );
-                })}
-              </Bar>
-            </BarChart>
-          </ResponsiveContainer>
-        </div>
-        <div className="flex flex-wrap gap-2 justify-center mt-2">
-          {yearlyStats.map((y) => (
-            <button
-              key={y.year}
-              onClick={() => setSelectedYear(y.year)}
-              className={`px-3 py-1.5 rounded-full text-xs font-medium border transition-colors duration-300 ${
-                selectedYear === y.year
-                  ? 'bg-amber text-bg border-amber'
-                  : 'bg-transparent text-secondary border-border hover:border-secondary'
-              }`}
-            >
-              {y.year}
-            </button>
-          ))}
+      <div className="bg-card border-2 border-border p-4 md:p-6 mb-8">
+        <div className="flex items-end justify-between gap-1.5 md:gap-3 overflow-x-auto pb-1">
+          {yearlyStats.map((y) => {
+            const c = chapterForYear(y.year);
+            const acc = accentColor(c.color);
+            const active = y.year === selectedYear;
+            return (
+              <motion.button
+                key={y.year}
+                onClick={() => setSelectedYear(y.year)}
+                whileHover={{ y: -3 }}
+                className="flex flex-col items-center gap-2 shrink-0"
+              >
+                <span className="font-mono text-[10px] text-muted">{y.totalHours}h</span>
+                <EqBars ratio={y.totalHours / maxHours} color={acc} height={130} width={18} segments={13} active={active} />
+                <span className={`font-mono text-[11px] mt-1 transition-colors duration-300 ${active ? 'text-primary font-bold' : 'text-muted'}`}>
+                  {y.year}
+                </span>
+              </motion.button>
+            );
+          })}
         </div>
       </div>
 
@@ -98,11 +70,11 @@ export default function YearsView() {
           className="grid grid-cols-1 lg:grid-cols-3 gap-6"
         >
           <div className="lg:col-span-2 space-y-6">
-            <div className="bg-card border border-border rounded-card p-6">
+            <div className="bg-card border-2 border-border p-6">
               <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
                 <h3 className="font-serif text-2xl font-bold">{selectedYear}</h3>
                 <span
-                  className="px-3 py-1 rounded-full text-xs font-semibold"
+                  className="px-3 py-1 text-xs font-mono font-semibold uppercase tracking-wide"
                   style={{ backgroundColor: `${accent}25`, color: accent, border: `1px solid ${accent}60` }}
                 >
                   Chapter: {chapter.name}
@@ -112,20 +84,20 @@ export default function YearsView() {
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-4">
                 <div>
                   <div className="text-secondary text-xs uppercase tracking-wide mb-1 flex items-center gap-1"><Clock className="w-3 h-3" /> Hours</div>
-                  <div className="text-3xl font-extrabold text-primary">{year.totalHours}</div>
+                  <div className="text-3xl font-bold font-mono text-primary">{year.totalHours}</div>
                 </div>
                 <div>
                   <div className="text-secondary text-xs uppercase tracking-wide mb-1 flex items-center gap-1"><ListMusic className="w-3 h-3" /> Plays</div>
-                  <div className="text-3xl font-extrabold text-primary">{year.totalPlays.toLocaleString()}</div>
+                  <div className="text-3xl font-bold font-mono text-primary">{year.totalPlays.toLocaleString()}</div>
                 </div>
                 <div>
                   <div className="text-secondary text-xs uppercase tracking-wide mb-1 flex items-center gap-1"><Moon className="w-3 h-3" /> Late Night</div>
-                  <div className="text-3xl font-extrabold text-primary">{year.lateNightPlays.toLocaleString()}</div>
+                  <div className="text-3xl font-bold font-mono text-primary">{year.lateNightPlays.toLocaleString()}</div>
                   <div className="text-xs text-secondary">{lateNightPct}% of plays</div>
                 </div>
                 <div>
                   <div className="text-secondary text-xs uppercase tracking-wide mb-1 flex items-center gap-1"><Music className="w-3 h-3" /> Artists</div>
-                  <div className="text-3xl font-extrabold text-primary">{year.uniqueArtists.toLocaleString()}</div>
+                  <div className="text-3xl font-bold font-mono text-primary">{year.uniqueArtists.toLocaleString()}</div>
                 </div>
               </div>
 
@@ -135,7 +107,7 @@ export default function YearsView() {
               </div>
             </div>
 
-            <div className="bg-card border border-border rounded-card p-6">
+            <div className="bg-card border-2 border-border p-6">
               <h4 className="text-sm font-bold uppercase tracking-wide text-secondary mb-4">Top Tracks This Year</h4>
               <ol className="space-y-3">
                 {tracks.map((t, i) => (
@@ -152,11 +124,11 @@ export default function YearsView() {
             </div>
           </div>
 
-          <div className="bg-card border border-border rounded-card p-6 flex flex-col items-center justify-center text-center">
+          <div className="bg-card border-2 border-border p-6 flex flex-col items-center justify-center text-center">
             <h4 className="text-sm font-bold uppercase tracking-wide text-secondary mb-6">Night Owl Score</h4>
             <div className="relative w-44 h-44">
               <svg viewBox="0 0 100 100" className="w-full h-full -rotate-90">
-                <circle cx="50" cy="50" r="42" fill="none" stroke="#2A4A5A" strokeWidth="10" />
+                <circle cx="50" cy="50" r="42" fill="none" stroke="#4A3B2E" strokeWidth="10" />
                 <motion.circle
                   cx="50" cy="50" r="42" fill="none"
                   stroke={accent}
@@ -169,7 +141,7 @@ export default function YearsView() {
                 />
               </svg>
               <div className="absolute inset-0 flex flex-col items-center justify-center">
-                <span className="text-4xl font-extrabold">{nightOwlScore}</span>
+                <span className="text-4xl font-bold font-mono">{nightOwlScore}</span>
                 <span className="text-xs text-secondary">/ 100</span>
               </div>
             </div>
