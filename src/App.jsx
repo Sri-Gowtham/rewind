@@ -50,7 +50,7 @@ export default function App() {
         <div className="max-w-7xl mx-auto px-4 md:px-8 py-4 flex items-center justify-between gap-4">
           <div className="flex items-center gap-2 shrink-0">
             <Headphones className="w-5 h-5 text-amber" />
-            <span className="font-serif font-bold text-lg tracking-tight hidden sm:inline">Echoes</span>
+            <span className="font-serif font-bold text-lg tracking-tight hidden sm:inline">Rewind</span>
           </div>
 
           <nav className="flex items-center gap-1 bg-card border border-border rounded-full p-1 overflow-x-auto no-scrollbar">

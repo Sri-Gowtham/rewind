@@ -60,7 +60,7 @@ export default function Theatre({ onBegin }) {
         transition={{ duration: 1 }}
         className="absolute bottom-8 text-secondary text-sm tracking-widest uppercase"
       >
-        Echoes — A Decade in Sound
+        Rewind — Some people write diaries. You made playlists.
       </motion.p>
     </div>
   );

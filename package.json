@@ -1,5 +1,6 @@
 {
-  "name": "echoes-a-decade-in-sound",
+  "name": "rewind",
+  "description": "Some people write diaries. You made playlists.",
   "private": true,
   "version": "1.0.0",
   "type": "module",
