@@ -6,7 +6,7 @@ A cinematic frontend experience that transforms 11 years of real
 Spotify listening data into an emotional narrative — built for WebRush 2026.
 
 ## Live Demo
-[Add Vercel URL here]
+[https://rewind-lilac.vercel.app/](https://rewind-lilac.vercel.app/)
 
 ## Tech Stack
 React · Vite · Tailwind CSS · Framer Motion · Recharts
