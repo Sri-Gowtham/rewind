@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 import { useState, useEffect } from 'react';
 import { playThunk } from '../utils/sound.js';
+import Waveform from './Waveform.jsx';
 
 const lines = [
   { text: '11 years.', size: 'text-4xl md:text-6xl', delay: 0.3 },
@@ -24,13 +25,9 @@ export default function Theatre({ onBegin }) {
       style={{ background: 'radial-gradient(circle at 50% 30%, #3A2418 0%, #1B1410 65%)' }}
     >
       <div className="grain" />
-      <div
-        className="absolute inset-x-0 bottom-0 h-1/2 opacity-25 pointer-events-none"
-        style={{
-          background:
-            'repeating-linear-gradient(180deg, #C1502E 0px, #C1502E 2px, transparent 2px, transparent 40px, #D4A017 40px, #D4A017 42px, transparent 42px, transparent 80px)',
-        }}
-      />
+      <div className="absolute inset-x-0 bottom-0 h-56 pointer-events-none px-4">
+        <Waveform bars={72} opacity={0.22} className="h-full" />
+      </div>
       <div
         className="absolute inset-0 opacity-70"
         style={{

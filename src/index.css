@@ -17,6 +17,19 @@ html, body {
   overflow-x: hidden;
 }
 
+/* Kill the browser default blue focus ring everywhere, replace with a
+   warm ring that only shows for keyboard navigation, not mouse clicks. */
+button, a {
+  outline: none;
+}
+button:focus, a:focus {
+  outline: none;
+}
+button:focus-visible, a:focus-visible {
+  outline: 2px solid #E8C468;
+  outline-offset: 2px;
+}
+
 #root {
   min-height: 100vh;
 }
