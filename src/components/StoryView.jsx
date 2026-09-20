@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronDown, Clock, Moon, Star, ArrowDown } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts';
 import { chapters, yearlyStats } from '../data/spotifyStory.js';
+import TiltCard from './TiltCard.jsx';
 
 const turningPoints = [
   "Spotify stopped being an experiment. Something clicked.",
@@ -15,6 +16,15 @@ function chapterForYear(year) {
   return chapters.find((c) => year >= c.yearRange[0] && year <= c.yearRange[1]);
 }
 
+function shade(hex, percent) {
+  const num = parseInt(hex.replace('#', ''), 16);
+  const amt = Math.round(2.55 * percent);
+  const r = Math.min(255, Math.max(0, (num >> 16) + amt));
+  const g = Math.min(255, Math.max(0, ((num >> 8) & 0x00ff) + amt));
+  const b = Math.min(255, Math.max(0, (num & 0x0000ff) + amt));
+  return `#${(0x1000000 + r * 0x10000 + g * 0x100 + b).toString(16).slice(1)}`;
+}
+
 const maxHours = Math.max(...yearlyStats.map((y) => y.totalHours));
 
 function ChapterCard({ chapter, isOpen, onToggle }) {
@@ -25,18 +35,36 @@ function ChapterCard({ chapter, isOpen, onToggle }) {
   const totalLateNight = yearsInChapter.reduce((s, y) => s + y.lateNightPlays, 0);
 
   return (
-    <motion.div
+    <TiltCard
       layout
+      glowColor={chapter.color}
+      maxTilt={8}
       className="shrink-0 w-[85vw] sm:w-[520px] md:w-[560px] snap-center"
-      whileHover={{ y: -6 }}
-      transition={{ duration: 0.3 }}
     >
       <div
         className={`relative rounded-card overflow-hidden border border-border bg-gradient-to-br ${chapter.gradient} shadow-xl transition-shadow duration-300 hover:shadow-2xl`}
-        style={{ boxShadow: `0 20px 60px -20px ${chapter.color}55` }}
+        style={{
+          boxShadow: `0 30px 70px -20px ${chapter.color}66, 0 0 0 1px rgba(255,255,255,0.04) inset`,
+          transformStyle: 'preserve-3d',
+        }}
       >
-        <div className="p-6 md:p-8">
-          <div className="flex items-center justify-between mb-4">
+        <motion.div
+          aria-hidden
+          className="absolute rounded-full blur-3xl pointer-events-none"
+          style={{ width: 220, height: 220, top: -60, right: -60, background: chapter.color, opacity: 0.25 }}
+          animate={{ x: [0, 20, 0], y: [0, -15, 0] }}
+          transition={{ duration: 9, repeat: Infinity, ease: 'easeInOut' }}
+        />
+        <motion.div
+          aria-hidden
+          className="absolute rounded-full blur-3xl pointer-events-none"
+          style={{ width: 180, height: 180, bottom: -50, left: -40, background: chapter.color, opacity: 0.18 }}
+          animate={{ x: [0, -15, 0], y: [0, 15, 0] }}
+          transition={{ duration: 11, repeat: Infinity, ease: 'easeInOut', delay: 1 }}
+        />
+
+        <div className="relative p-6 md:p-8" style={{ transformStyle: 'preserve-3d' }}>
+          <div className="flex items-center justify-between mb-4" style={{ transform: 'translateZ(35px)' }}>
             <span
               className="inline-block px-3 py-1 rounded-full text-xs font-semibold tracking-wide uppercase"
               style={{ backgroundColor: `${chapter.color}30`, color: '#fff', border: `1px solid ${chapter.color}80` }}
@@ -46,28 +74,31 @@ function ChapterCard({ chapter, isOpen, onToggle }) {
             <Star className="w-4 h-4 opacity-60" style={{ color: chapter.color }} />
           </div>
 
-          <h3 className="text-3xl md:text-4xl font-extrabold text-white mb-3 tracking-tight">
+          <h3
+            className="text-3xl md:text-4xl font-extrabold text-white mb-3 tracking-tight"
+            style={{ transform: 'translateZ(50px)', textShadow: '0 8px 24px rgba(0,0,0,0.35)' }}
+          >
             {chapter.name}
           </h3>
 
-          <p className="text-white/80 text-sm md:text-base leading-relaxed mb-5">
+          <p className="text-white/80 text-sm md:text-base leading-relaxed mb-5" style={{ transform: 'translateZ(25px)' }}>
             {chapter.summary}
           </p>
 
-          <div className="grid grid-cols-3 gap-3 mb-5">
-            <div className="bg-black/25 rounded-lg p-3 backdrop-blur-sm">
+          <div className="grid grid-cols-3 gap-3 mb-5" style={{ transform: 'translateZ(45px)' }}>
+            <div className="bg-black/25 rounded-lg p-3 backdrop-blur-sm border border-white/5">
               <div className="flex items-center gap-1 text-white/60 text-[10px] uppercase tracking-wide mb-1">
                 <Clock className="w-3 h-3" /> Hours
               </div>
               <div className="text-white font-bold text-lg">{totalHours}</div>
             </div>
-            <div className="bg-black/25 rounded-lg p-3 backdrop-blur-sm">
+            <div className="bg-black/25 rounded-lg p-3 backdrop-blur-sm border border-white/5">
               <div className="flex items-center gap-1 text-white/60 text-[10px] uppercase tracking-wide mb-1">
                 <Moon className="w-3 h-3" /> Late Night
               </div>
               <div className="text-white font-bold text-lg">{totalLateNight.toLocaleString()}</div>
             </div>
-            <div className="bg-black/25 rounded-lg p-3 backdrop-blur-sm">
+            <div className="bg-black/25 rounded-lg p-3 backdrop-blur-sm border border-white/5">
               <div className="text-white/60 text-[10px] uppercase tracking-wide mb-1">Top Artist</div>
               <div className="text-white font-bold text-sm leading-tight">{chapter.topArtists[0]}</div>
             </div>
@@ -75,12 +106,12 @@ function ChapterCard({ chapter, isOpen, onToggle }) {
 
           <div
             className="pl-4 py-2 mb-5 text-white/90 text-sm italic"
-            style={{ borderLeft: `3px solid ${chapter.color}` }}
+            style={{ borderLeft: `3px solid ${chapter.color}`, transform: 'translateZ(20px)' }}
           >
             "{chapter.insight}"
           </div>
 
-          <div className="flex flex-wrap gap-2 mb-5">
+          <div className="flex flex-wrap gap-2 mb-5" style={{ transform: 'translateZ(15px)' }}>
             {chapter.topArtists.map((a) => (
               <span
                 key={a}
@@ -94,6 +125,7 @@ function ChapterCard({ chapter, isOpen, onToggle }) {
           <button
             onClick={onToggle}
             className="flex items-center gap-1.5 text-white/70 hover:text-white text-sm font-medium transition-colors duration-300"
+            style={{ transform: 'translateZ(30px)' }}
           >
             {isOpen ? 'Show less' : 'See the full chapter'}
             <motion.span animate={{ rotate: isOpen ? 180 : 0 }} transition={{ duration: 0.3 }}>
@@ -109,7 +141,7 @@ function ChapterCard({ chapter, isOpen, onToggle }) {
               animate={{ height: 'auto', opacity: 1 }}
               exit={{ height: 0, opacity: 0 }}
               transition={{ duration: 0.4, ease: 'easeInOut' }}
-              className="overflow-hidden"
+              className="overflow-hidden relative"
             >
               <div className="px-6 md:px-8 pb-8 pt-2 bg-black/20">
                 <h4 className="text-white/70 text-xs uppercase tracking-widest mb-3 font-semibold">
@@ -145,7 +177,67 @@ function ChapterCard({ chapter, isOpen, onToggle }) {
           )}
         </AnimatePresence>
       </div>
-    </motion.div>
+    </TiltCard>
+  );
+}
+
+function IsoBar({ year, chapter, heightPct, delay, isHovered, onEnter, onLeave }) {
+  const front = chapter.color;
+  const top = shade(chapter.color, 35);
+  const side = shade(chapter.color, -35);
+  const faceDepth = 6;
+
+  return (
+    <div
+      className="flex-1 flex flex-col items-center justify-end h-full relative group cursor-pointer"
+      onMouseEnter={onEnter}
+      onMouseLeave={onLeave}
+    >
+      {isHovered && (
+        <div className="absolute bottom-full mb-4 z-30 bg-card border border-border rounded-lg p-3 w-44 shadow-2xl text-left">
+          <div className="font-bold text-sm mb-1">{year.year}</div>
+          <div className="text-xs text-secondary">Hours: <span className="text-primary font-medium">{year.totalHours}</span></div>
+          <div className="text-xs text-secondary">Top artist: <span className="text-primary font-medium">{year.topArtist}</span></div>
+          <div className="text-xs text-secondary">Late night: <span className="text-primary font-medium">{year.lateNightPlays.toLocaleString()}</span></div>
+          <div className="text-xs text-secondary">Chapter: <span style={{ color: chapter.color }} className="font-medium">{chapter.name}</span></div>
+        </div>
+      )}
+      <div className="relative w-full h-full flex items-end justify-center" style={{ paddingRight: faceDepth }}>
+        <motion.div
+          initial={{ height: 0 }}
+          animate={{ height: `${heightPct}%`, y: isHovered ? -6 : 0 }}
+          transition={{ height: { duration: 0.7, delay }, y: { duration: 0.25 } }}
+          className="relative w-[62%]"
+          style={{ minHeight: 4 }}
+        >
+          <div
+            className="absolute inset-0 rounded-t-[3px] transition-[filter] duration-300 group-hover:brightness-110"
+            style={{ background: `linear-gradient(180deg, ${top} 0%, ${front} 100%)` }}
+          />
+          <div
+            className="absolute left-0 right-0"
+            style={{
+              top: -faceDepth / 2,
+              height: faceDepth,
+              background: top,
+              transform: 'skewX(-45deg)',
+              transformOrigin: 'bottom left',
+            }}
+          />
+          <div
+            className="absolute top-0 bottom-0"
+            style={{
+              right: -faceDepth,
+              width: faceDepth,
+              background: side,
+              transform: 'skewY(-45deg)',
+              transformOrigin: 'top left',
+            }}
+          />
+        </motion.div>
+      </div>
+      <div className="text-[10px] md:text-xs text-secondary mt-3">{String(year.year).slice(2)}</div>
+    </div>
   );
 }
 
@@ -200,30 +292,16 @@ export default function StoryView() {
               const chapter = chapterForYear(y.year);
               const heightPct = Math.max((y.totalHours / maxHours) * 100, 3);
               return (
-                <div
+                <IsoBar
                   key={y.year}
-                  className="flex-1 flex flex-col items-center justify-end h-full relative group cursor-pointer"
-                  onMouseEnter={() => setHoverYear(y.year)}
-                  onMouseLeave={() => setHoverYear(null)}
-                >
-                  {hoverYear === y.year && (
-                    <div className="absolute bottom-full mb-2 z-30 bg-card border border-border rounded-lg p-3 w-44 shadow-2xl text-left">
-                      <div className="font-bold text-sm mb-1">{y.year}</div>
-                      <div className="text-xs text-secondary">Hours: <span className="text-primary font-medium">{y.totalHours}</span></div>
-                      <div className="text-xs text-secondary">Top artist: <span className="text-primary font-medium">{y.topArtist}</span></div>
-                      <div className="text-xs text-secondary">Late night: <span className="text-primary font-medium">{y.lateNightPlays.toLocaleString()}</span></div>
-                      <div className="text-xs text-secondary">Chapter: <span style={{ color: chapter.color }} className="font-medium">{chapter.name}</span></div>
-                    </div>
-                  )}
-                  <motion.div
-                    initial={{ height: 0 }}
-                    animate={{ height: `${heightPct}%` }}
-                    transition={{ duration: 0.7, delay: 0.03 * (y.year - 2013) }}
-                    className="w-full rounded-t-md transition-opacity duration-300 group-hover:opacity-80"
-                    style={{ backgroundColor: chapter.color, minHeight: 4 }}
-                  />
-                  <div className="text-[10px] md:text-xs text-secondary mt-2 -rotate-0">{String(y.year).slice(2)}</div>
-                </div>
+                  year={y}
+                  chapter={chapter}
+                  heightPct={heightPct}
+                  delay={0.03 * (y.year - 2013)}
+                  isHovered={hoverYear === y.year}
+                  onEnter={() => setHoverYear(y.year)}
+                  onLeave={() => setHoverYear(null)}
+                />
               );
             })}
           </div>

@@ -23,8 +23,29 @@ export default function App() {
   }
 
   return (
-    <div className="min-h-screen bg-bg text-primary">
-      <header className="sticky top-0 z-40 backdrop-blur-md bg-bg/80 border-b border-border">
+    <div className="relative min-h-screen bg-bg text-primary overflow-x-hidden">
+      <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+        <motion.div
+          className="absolute rounded-full blur-[120px]"
+          style={{ width: 500, height: 500, top: '-10%', left: '-10%', background: '#6366f1', opacity: 0.08 }}
+          animate={{ x: [0, 60, 0], y: [0, 40, 0] }}
+          transition={{ duration: 22, repeat: Infinity, ease: 'easeInOut' }}
+        />
+        <motion.div
+          className="absolute rounded-full blur-[120px]"
+          style={{ width: 550, height: 550, top: '30%', right: '-15%', background: '#f59e0b', opacity: 0.06 }}
+          animate={{ x: [0, -50, 0], y: [0, -30, 0] }}
+          transition={{ duration: 26, repeat: Infinity, ease: 'easeInOut', delay: 2 }}
+        />
+        <motion.div
+          className="absolute rounded-full blur-[120px]"
+          style={{ width: 480, height: 480, bottom: '-15%', left: '20%', background: '#10b981', opacity: 0.06 }}
+          animate={{ x: [0, 40, 0], y: [0, -25, 0] }}
+          transition={{ duration: 24, repeat: Infinity, ease: 'easeInOut', delay: 4 }}
+        />
+      </div>
+
+      <header className="relative z-40 sticky top-0 backdrop-blur-md bg-bg/80 border-b border-border">
         <div className="max-w-7xl mx-auto px-4 md:px-8 py-4 flex items-center justify-between gap-4">
           <div className="flex items-center gap-2 shrink-0">
             <Headphones className="w-5 h-5 text-amber" />
@@ -61,7 +82,7 @@ export default function App() {
         </div>
       </header>
 
-      <main className="max-w-7xl mx-auto px-4 md:px-8 py-8 md:py-12">
+      <main className="relative z-10 max-w-7xl mx-auto px-4 md:px-8 py-8 md:py-12">
         <AnimatePresence mode="wait">
           <motion.div
             key={view}
@@ -78,7 +99,7 @@ export default function App() {
         </AnimatePresence>
       </main>
 
-      <footer className="border-t border-border py-8 mt-12">
+      <footer className="relative z-10 border-t border-border py-8 mt-12">
         <div className="max-w-7xl mx-auto px-4 md:px-8 text-center text-secondary text-xs">
           Built from 149,860 real listening events. Every number here happened.
         </div>
