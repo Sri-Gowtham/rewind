@@ -1,3 +1,8 @@
+/**
+ * YearsView — year-by-year explorer.
+ * A clickable equalizer-style year selector drives a detail panel with
+ * per-year stats, top tracks, and a "night owl score" gauge.
+ */
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Moon, Music, ListMusic, Clock } from 'lucide-react';

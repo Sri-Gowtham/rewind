@@ -1,3 +1,9 @@
+/**
+ * StoryView — the narrative core of Rewind.
+ * Renders the 5-chapter horizontal carousel (with click-to-open detail
+ * modals), the "what changed between chapters" timeline, and the
+ * year-by-year summary chart at the bottom.
+ */
 import { useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronRight, ChevronLeft, X, Clock, Moon, Disc3 } from 'lucide-react';

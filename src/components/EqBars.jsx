@@ -1,7 +1,14 @@
+/**
+ * EqBars — a segmented, hi-fi-equalizer style bar chart primitive.
+ * Renders a stack of small blocks rather than one smooth rounded
+ * rectangle, deliberately in place of a Recharts <Bar/>. Used by
+ * YearsView (year selector), StoryView (per-chapter mini chart), and
+ * ArtistsView (ranking meters).
+ * @param {number} ratio - value as a 0–1 fraction of the max, controls how many segments light up
+ * @param {string} color - fill color for lit segments
+ */
 import { motion } from 'framer-motion';
 
-// A segmented, hi-fi-equalizer style bar: a stack of small blocks rather
-// than one smooth rounded rectangle. Deliberately not a Recharts <Bar/>.
 export default function EqBars({ ratio, color, segments = 12, height = 180, width = 22, delay = 0, active = true }) {
   const lit = Math.max(1, Math.round(ratio * segments));
   const blocks = Array.from({ length: segments });

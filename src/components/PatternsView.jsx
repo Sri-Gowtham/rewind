@@ -1,3 +1,8 @@
+/**
+ * PatternsView — listening behavior and habits.
+ * Hourly listening pattern, skip-rate visualization, platform split,
+ * late-night trend line, and a total-lifetime-listening summary card.
+ */
 import { useMemo } from 'react';
 import { motion } from 'framer-motion';
 import {

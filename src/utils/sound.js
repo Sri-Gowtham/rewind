@@ -1,3 +1,9 @@
+/**
+ * sound.js — synthesized retro UI click/thunk sounds.
+ * Generated at runtime via the Web Audio API oscillator, so no audio
+ * asset files are shipped or fetched. playClick() is for light nav
+ * taps, playThunk() is for heavier actions like opening a chapter.
+ */
 let ctx;
 function getCtx() {
   if (!ctx) ctx = new (window.AudioContext || window.webkitAudioContext)();

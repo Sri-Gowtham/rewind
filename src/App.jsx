@@ -1,3 +1,8 @@
+/**
+ * App — root shell for Rewind.
+ * Gates the experience behind the Theatre intro, then renders the sticky
+ * nav and routes between the four views (Story, Years, Artists, Patterns).
+ */
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { BookOpen, CalendarDays, Users, Activity, CassetteTape } from 'lucide-react';

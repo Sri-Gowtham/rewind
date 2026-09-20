@@ -1,9 +1,13 @@
+/**
+ * Waveform — a decorative, self-animating audio waveform.
+ * Pure CSS/Framer Motion, no audio API or file involved — each bar
+ * breathes on its own phase so the whole strip reads as "live" music.
+ * Used as ambient background texture in Theatre and App.
+ */
 import { motion } from 'framer-motion';
 
 const COLORS = ['#C1502E', '#D4A017', '#2F6F6E', '#E8C468'];
 
-// A decorative, self-animating audio waveform — no audio API, no file,
-// just bars breathing at different phases so it reads as "live" music.
 export default function Waveform({ bars = 48, className = '', opacity = 0.14 }) {
   return (
     <div className={`flex items-end gap-[3px] ${className}`} style={{ opacity }}>

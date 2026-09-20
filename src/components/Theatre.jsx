@@ -1,3 +1,8 @@
+/**
+ * Theatre — the cinematic full-screen intro sequence shown before the
+ * user has entered the app. Fades in the hook lines, then reveals the
+ * "Press Play" button that transitions into the main experience.
+ */
 import { motion } from 'framer-motion';
 import { useState, useEffect } from 'react';
 import { playThunk } from '../utils/sound.js';

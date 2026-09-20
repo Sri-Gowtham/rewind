@@ -1,3 +1,9 @@
+/**
+ * Color utilities for chapter accent colors.
+ * shade() lightens/darkens a hex color; accentColor() guarantees a
+ * chapter's brand color stays readable even when it's intentionally
+ * as dark as the card surface it sits on (the "Long Night" chapter).
+ */
 export function shade(hex, percent) {
   const num = parseInt(hex.replace('#', ''), 16);
   const amt = Math.round(2.55 * percent);

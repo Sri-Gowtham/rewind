@@ -1,3 +1,8 @@
+/**
+ * ArtistsView — top-artist rankings and "eras" over the decade.
+ * Shows ranked artist cards, an overlaid area chart of the three
+ * defining artists' activity by year, and a rotating insights carousel.
+ */
 import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, Legend } from 'recharts';
