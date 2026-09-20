@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
 import { useState, useEffect } from 'react';
+import { playThunk } from '../utils/sound.js';
 
 const lines = [
   { text: '11 years.', size: 'text-4xl md:text-6xl', delay: 0.3 },
@@ -18,8 +19,18 @@ export default function Theatre({ onBegin }) {
   }, []);
 
   return (
-    <div className="fixed inset-0 bg-bg flex flex-col items-center justify-center overflow-hidden px-6">
+    <div
+      className="fixed inset-0 flex flex-col items-center justify-center overflow-hidden px-6"
+      style={{ background: 'radial-gradient(circle at 50% 30%, #3A2418 0%, #1B1410 65%)' }}
+    >
       <div className="grain" />
+      <div
+        className="absolute inset-x-0 bottom-0 h-1/2 opacity-25 pointer-events-none"
+        style={{
+          background:
+            'repeating-linear-gradient(180deg, #C1502E 0px, #C1502E 2px, transparent 2px, transparent 40px, #D4A017 40px, #D4A017 42px, transparent 42px, transparent 80px)',
+        }}
+      />
       <div
         className="absolute inset-0 opacity-70"
         style={{
@@ -62,7 +73,7 @@ export default function Theatre({ onBegin }) {
             transition={{ duration: 0.8 }}
             whileHover={{ scale: 1.03, rotate: -1 }}
             whileTap={{ scale: 0.97 }}
-            onClick={onBegin}
+            onClick={() => { playThunk(); onBegin(); }}
             className="mt-10 px-10 py-4 border-2 border-warm1 bg-transparent text-warm2 font-mono font-bold text-base tracking-[0.2em] uppercase transition-all duration-300"
             style={{ boxShadow: '6px 6px 0 0 #C1502E' }}
           >

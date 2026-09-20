@@ -6,6 +6,7 @@ import StoryView from './components/StoryView.jsx';
 import YearsView from './components/YearsView.jsx';
 import ArtistsView from './components/ArtistsView.jsx';
 import PatternsView from './components/PatternsView.jsx';
+import { playClick } from './utils/sound.js';
 
 const NAV = [
   { id: 'story', label: 'Story', icon: BookOpen },
@@ -23,8 +24,18 @@ export default function App() {
   }
 
   return (
-    <div className="relative min-h-screen bg-bg text-primary overflow-x-hidden">
+    <div
+      className="relative min-h-screen text-primary overflow-x-hidden"
+      style={{ background: 'radial-gradient(ellipse 1200px 800px at 50% -10%, #3A2418 0%, #1B1410 55%)' }}
+    >
       <div className="grain" />
+      <div
+        className="fixed inset-x-0 bottom-0 h-64 opacity-[0.07] pointer-events-none z-0"
+        style={{
+          background:
+            'repeating-linear-gradient(180deg, #C1502E 0px, #C1502E 3px, transparent 3px, transparent 56px, #D4A017 56px, #D4A017 59px, transparent 59px, transparent 112px, #2F6F6E 112px, #2F6F6E 115px, transparent 115px, transparent 168px)',
+        }}
+      />
 
       <header className="relative z-40 sticky top-0 bg-bg/95 border-b-2 border-border">
         <div className="max-w-7xl mx-auto px-4 md:px-8 py-4 flex items-center justify-between gap-4">
@@ -40,7 +51,7 @@ export default function App() {
               return (
                 <button
                   key={item.id}
-                  onClick={() => setView(item.id)}
+                  onClick={() => { playClick(); setView(item.id); }}
                   className={`relative flex items-center gap-1.5 px-3 md:px-4 py-2 text-sm font-medium font-mono transition-colors duration-300 whitespace-nowrap ${
                     active ? 'text-bg' : 'text-secondary hover:text-warm3'
                   }`}

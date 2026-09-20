@@ -1,9 +1,10 @@
 import { useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronDown, ChevronLeft, ChevronRight, Clock, Moon, Disc3 } from 'lucide-react';
+import { ChevronRight, ChevronLeft, X, Clock, Moon, Disc3 } from 'lucide-react';
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts';
 import { chapters, yearlyStats } from '../data/spotifyStory.js';
 import { accentColor } from '../utils/color.js';
+import { playThunk, playClick } from '../utils/sound.js';
 import EqBars from './EqBars.jsx';
 
 const turningPoints = [
@@ -17,14 +18,13 @@ function chapterForYear(year) {
   return chapters.find((c) => year >= c.yearRange[0] && year <= c.yearRange[1]);
 }
 
-function ChapterCard({ chapter, isOpen, onToggle, index }) {
+function ChapterCard({ chapter, onOpen, index }) {
   const accent = accentColor(chapter.color);
   const yearsInChapter = yearlyStats.filter(
     (y) => y.year >= chapter.yearRange[0] && y.year <= chapter.yearRange[1]
   );
   const totalHours = yearsInChapter.reduce((s, y) => s + y.totalHours, 0);
   const totalLateNight = yearsInChapter.reduce((s, y) => s + y.lateNightPlays, 0);
-  const maxYearHours = Math.max(...yearsInChapter.map((y) => y.totalHours));
 
   return (
     <motion.div
@@ -35,8 +35,9 @@ function ChapterCard({ chapter, isOpen, onToggle, index }) {
       transition={{ duration: 0.5 }}
       className="shrink-0 w-[85vw] sm:w-[440px] md:w-[460px] snap-center"
     >
-      <div
-        className="ticket-hover ticket-notch halftone relative bg-card h-full"
+      <button
+        onClick={onOpen}
+        className="ticket-hover ticket-notch halftone relative bg-card h-full text-left block w-full"
         style={{ '--accent': accent, border: `2px solid ${accent}`, boxShadow: `4px 4px 0 0 ${accent}` }}
       >
         <div className="px-6 md:px-7 pt-6 pb-2 flex items-center justify-between dashed-divider border-t-0" style={{ borderBottom: `2px dashed ${accent}55` }}>
@@ -89,55 +90,126 @@ function ChapterCard({ chapter, isOpen, onToggle, index }) {
             ))}
           </div>
 
-          <button
-            onClick={onToggle}
-            className="flex items-center gap-1.5 font-mono text-xs uppercase tracking-widest transition-colors duration-300"
+          <span
+            className="flex items-center gap-1.5 font-mono text-xs uppercase tracking-widest"
             style={{ color: accent }}
           >
-            {isOpen ? 'Rewind' : 'Play Chapter'}
-            <motion.span animate={{ rotate: isOpen ? 180 : 0 }} transition={{ duration: 0.3 }}>
-              <ChevronDown className="w-4 h-4" />
-            </motion.span>
+            Play Chapter
+            <ChevronRight className="w-4 h-4" />
+          </span>
+        </div>
+      </button>
+    </motion.div>
+  );
+}
+
+function ChapterModal({ chapter, onClose }) {
+  const accent = accentColor(chapter.color);
+  const yearsInChapter = yearlyStats.filter(
+    (y) => y.year >= chapter.yearRange[0] && y.year <= chapter.yearRange[1]
+  );
+  const totalHours = yearsInChapter.reduce((s, y) => s + y.totalHours, 0);
+  const totalLateNight = yearsInChapter.reduce((s, y) => s + y.lateNightPlays, 0);
+  const maxYearHours = Math.max(...yearsInChapter.map((y) => y.totalHours));
+
+  return (
+    <motion.div
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 md:p-8"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.2 }}
+    >
+      <div
+        className="absolute inset-0 bg-black/70"
+        style={{ backdropFilter: 'blur(2px)' }}
+        onClick={() => { playClick(); onClose(); }}
+      />
+
+      <motion.div
+        initial={{ opacity: 0, scale: 0.92, y: 16 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        exit={{ opacity: 0, scale: 0.94, y: 10 }}
+        transition={{ duration: 0.25, ease: 'easeOut' }}
+        className="relative halftone bg-card w-full max-w-2xl max-h-[85vh] overflow-y-auto scroll-thin"
+        style={{ border: `2px solid ${accent}`, boxShadow: `8px 8px 0 0 ${accent}` }}
+      >
+        <div
+          className="sticky top-0 bg-card px-6 md:px-8 pt-6 pb-3 flex items-center justify-between z-10"
+          style={{ borderBottom: `2px dashed ${accent}55` }}
+        >
+          <span className="font-mono text-xs tracking-[0.2em] uppercase" style={{ color: accent }}>
+            {chapter.years}
+          </span>
+          <button
+            onClick={() => { playClick(); onClose(); }}
+            aria-label="Close"
+            className="text-muted hover:text-warm2 transition-colors duration-300"
+          >
+            <X className="w-5 h-5" />
           </button>
         </div>
 
-        <AnimatePresence>
-          {isOpen && (
-            <motion.div
-              initial={{ height: 0, opacity: 0 }}
-              animate={{ height: 'auto', opacity: 1 }}
-              exit={{ height: 0, opacity: 0 }}
-              transition={{ duration: 0.4, ease: 'easeInOut' }}
-              className="overflow-hidden relative"
-            >
-              <div className="px-6 md:px-7 pb-7 pt-3" style={{ borderTop: `2px dashed ${accent}55` }}>
-                <h4 className="text-muted text-[10px] uppercase tracking-widest mb-3 font-mono">
-                  Key tracks
-                </h4>
-                <ul className="space-y-1.5 mb-6">
-                  {chapter.keyTracks.map((t) => (
-                    <li key={t} className="text-secondary text-sm">
-                      · {t}
-                    </li>
-                  ))}
-                </ul>
+        <div className="px-6 md:px-8 py-6">
+          <h3 className="font-serif text-3xl md:text-4xl font-bold text-primary mb-3 tracking-tight">
+            {chapter.name}
+          </h3>
 
-                <h4 className="text-muted text-[10px] uppercase tracking-widest mb-4 font-mono">
-                  Hours by year
-                </h4>
-                <div className="flex items-end gap-5 justify-center">
-                  {yearsInChapter.map((y, i) => (
-                    <div key={y.year} className="flex flex-col items-center gap-2">
-                      <EqBars ratio={y.totalHours / maxYearHours} color={accent} height={90} width={16} segments={9} delay={i * 0.08} />
-                      <span className="font-mono text-[10px] text-muted">{String(y.year).slice(2)}</span>
-                    </div>
-                  ))}
-                </div>
+          <p className="text-secondary text-sm md:text-base leading-relaxed mb-6">
+            {chapter.summary}
+          </p>
+
+          <div className="grid grid-cols-3 gap-3 mb-6 font-mono">
+            <div className="border border-border p-3">
+              <div className="flex items-center gap-1 text-muted text-[9px] uppercase tracking-wide mb-1">
+                <Clock className="w-3 h-3" /> Hours
               </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </div>
+              <div className="text-primary font-bold text-lg">{totalHours}</div>
+            </div>
+            <div className="border border-border p-3">
+              <div className="flex items-center gap-1 text-muted text-[9px] uppercase tracking-wide mb-1">
+                <Moon className="w-3 h-3" /> Late Night
+              </div>
+              <div className="text-primary font-bold text-lg">{totalLateNight.toLocaleString()}</div>
+            </div>
+            <div className="border border-border p-3">
+              <div className="text-muted text-[9px] uppercase tracking-wide mb-1">Top Act</div>
+              <div className="text-primary font-bold text-sm leading-tight">{chapter.topArtists[0]}</div>
+            </div>
+          </div>
+
+          <div className="pl-4 py-1.5 mb-6 text-primary/90 text-sm italic" style={{ borderLeft: `3px solid ${accent}` }}>
+            "{chapter.insight}"
+          </div>
+
+          <div className="flex flex-wrap gap-2 mb-6">
+            {chapter.topArtists.map((a) => (
+              <span key={a} className="px-2.5 py-1 text-[11px] font-mono text-secondary border border-border">
+                {a}
+              </span>
+            ))}
+          </div>
+
+          <h4 className="text-muted text-[10px] uppercase tracking-widest mb-3 font-mono">Key tracks</h4>
+          <ul className="space-y-1.5 mb-7">
+            {chapter.keyTracks.map((t) => (
+              <li key={t} className="text-secondary text-sm">
+                · {t}
+              </li>
+            ))}
+          </ul>
+
+          <h4 className="text-muted text-[10px] uppercase tracking-widest mb-4 font-mono">Hours by year</h4>
+          <div className="flex items-end gap-6 justify-center">
+            {yearsInChapter.map((y, i) => (
+              <div key={y.year} className="flex flex-col items-center gap-2">
+                <EqBars ratio={y.totalHours / maxYearHours} color={accent} height={100} width={18} segments={10} delay={i * 0.08} />
+                <span className="font-mono text-[10px] text-muted">{String(y.year).slice(2)}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </motion.div>
     </motion.div>
   );
 }
@@ -243,12 +315,20 @@ export default function StoryView() {
               key={chapter.id}
               chapter={chapter}
               index={i}
-              isOpen={openId === chapter.id}
-              onToggle={() => setOpenId(openId === chapter.id ? null : chapter.id)}
+              onOpen={() => { playThunk(); setOpenId(chapter.id); }}
             />
           ))}
         </div>
       </div>
+
+      <AnimatePresence>
+        {openId && (
+          <ChapterModal
+            chapter={chapters.find((c) => c.id === openId)}
+            onClose={() => setOpenId(null)}
+          />
+        )}
+      </AnimatePresence>
 
       <div className="flex items-center justify-center gap-2 mt-6">
         {chapters.map((c, i) => {
